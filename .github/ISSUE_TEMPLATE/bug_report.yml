@@ -7,7 +7,7 @@ body:
       value: |
         Thank you for helping us improve tgx-core. If you have questiongs instead, please visit the provided support platforms.
 
-        [Telegram](https://web.telegram.org/a/#-1002483114435)
+        [Telegram](https://web.telegram.org/a/#-1002384223877_2)
 
   - type: textarea
     id: description
@@ -35,7 +35,9 @@ body:
         Provide a list of the versions you're using, but not limited to:
       placeholder: |
         - tgx-core 0.0.0 "npm ls"
-        - node.js 0.0.0 "node -v"
+        - Node.js 0.0.0 "node -v"
+        - TypeScript|JavaScript 0.0.0 "typescript -v"
+        - Windows
     validations:
       required: true
 
