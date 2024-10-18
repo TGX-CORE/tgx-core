@@ -1,0 +1,54 @@
+name: Bug Report
+description: Help us improve tgx-core.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us improve tgx-core.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a clear and concise description of the bug.
+      placeholder: "Describe the issue..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: "Steps to Reproduce"
+      description: |
+        Please provide a clear and understandable code example in reproducing this bug.
+      render: typescript
+    validations:
+      required: true
+
+  - type: input
+    id: expected-behavior
+    attributes:
+      label: "Expected Behavior" 
+      description: |
+        Please provide a cleaer explanation.
+
+  - type: textarea
+    id: runtime-description
+    attributes:
+      label: "Runtime Description"
+      description: |
+        Provide a list of the versions you're using, but not limited to:
+      placeholder: |
+        - tgx-core 0.0.0 "npm ls"
+        - node.js 0.0.0 "node -v"
+        
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority Level"
+      description: "In your descretion, select the priority level of this bug."
+      options:
+        - Low
+        - Medium
+        - High
