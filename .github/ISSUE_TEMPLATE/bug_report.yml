@@ -5,33 +5,27 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for helping us improve tgx-core.
+        Thank you for helping us improve tgx-core. If you have questiongs instead, please visit the provided support platforms.
+
+        [Telegram](https://web.telegram.org/a/#-1002483114435)
 
   - type: textarea
     id: description
     attributes:
       label: Description
       description: Provide a clear and concise description of the bug.
-      placeholder: "Describe the issue..."
     validations:
       required: true
 
   - type: textarea
-    id: steps-to-reproduce
+    id: code-example
     attributes:
-      label: "Steps to Reproduce"
+      label: "Code Example"
       description: |
         Please provide a clear and understandable code example in reproducing this bug.
       render: typescript
     validations:
       required: true
-
-  - type: input
-    id: expected-behavior
-    attributes:
-      label: "Expected Behavior" 
-      description: |
-        Please provide a cleaer explanation.
 
   - type: textarea
     id: runtime-description
@@ -42,7 +36,9 @@ body:
       placeholder: |
         - tgx-core 0.0.0 "npm ls"
         - node.js 0.0.0 "node -v"
-        
+    validations:
+      required: true
+
   - type: dropdown
     id: priority
     attributes:
@@ -52,3 +48,5 @@ body:
         - Low
         - Medium
         - High
+    validations:
+      required: true
