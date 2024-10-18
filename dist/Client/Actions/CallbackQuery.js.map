@@ -1,0 +1,1 @@
+{"version":3,"file":"CallbackQuery.js","sourceRoot":"","sources":["../../../src/Client/Actions/CallbackQuery.ts"],"names":[],"mappings":";;;AAEA,+DAAgF;AAChF,qDAAiD;AACjD,yDAAqD;AAErD,MAAa,mBAAoB,SAAQ,+BAAkD;IAIvF,YAAmB,MAAc;QAC7B,KAAK,CAAC,MAAM,EAAE,6BAAa,EAAE,mBAAmB,CAAC,OAAO,CAAC,CAAA;IAC7D,CAAC;;AANL,kDAQC;AANiB,2BAAO,GAAgB,yBAAW,CAAC,aAAa,CAAA"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"MessageReactionCount.d.ts","sourceRoot":"","sources":["../../../../src/Client/Actions/MessageReactionCount.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,2BAA2B,EAAE,MAAM,oCAAoC,CAAA;AAChF,OAAO,EAAE,aAAa,EAAE,MAAM,WAAW,CAAA;AAEzC,qBAAa,0BAA2B,SAAQ,aAAa;IAEzD,OAAc,OAAO,EAAE,MAAM,CAA2B;IACxC,MAAM,CAAC,MAAM,EAAE,2BAA2B;CA2B7D"}

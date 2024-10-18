@@ -1,0 +1,1 @@
+{"version":3,"file":"BaseBuilder.d.ts","sourceRoot":"","sources":["../../../src/Builders/BaseBuilder.ts"],"names":[],"mappings":"AAEA,qBAAa,WAAW,CAAC,OAAO,GAAG,GAAG;IAE7B,KAAK,CAAC,EAAE,GAAG,CAAA;gBAEC,MAAM,EAAE,OAAO;IAI3B,KAAK,IAAI,MAAM;IAIf,QAAQ,CAAC,QAAQ,EAAE,GAAG,EAAE,OAAO,GAAE,GAAU,GAAG,GAAG;CAiBzD"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"InlineQuery.js","sourceRoot":"","sources":["../../../src/Client/Actions/InlineQuery.ts"],"names":[],"mappings":";;;AAEA,2DAAuD;AACvD,qDAAiD;AACjD,yDAAqD;AAErD,MAAa,iBAAkB,SAAQ,+BAAwC;IAI3E,YAAmB,MAAc;QAC7B,KAAK,CAAC,MAAM,EAAE,yBAAW,EAAE,iBAAiB,CAAC,OAAO,CAAC,CAAA;IACzD,CAAC;;AANL,8CAQC;AANiB,yBAAO,GAAgB,yBAAW,CAAC,WAAW,CAAA"}

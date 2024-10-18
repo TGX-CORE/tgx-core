@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig.json",
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "ES2021",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "declaration": true,
+        "sourceMap": true,
+        "lib": ["ESNext", "DOM"]
+    },
+    
+}

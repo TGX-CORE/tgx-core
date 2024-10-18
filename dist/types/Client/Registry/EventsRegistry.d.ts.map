@@ -1,0 +1,1 @@
+{"version":3,"file":"EventsRegistry.d.ts","sourceRoot":"","sources":["../../../../src/Client/Registry/EventsRegistry.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,qBAAqB,CAAA;AAC3C,OAAO,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAA;AACrC,OAAO,EAAE,MAAM,EAAE,MAAM,WAAW,CAAA;AAElC,qBAAa,cAAe,SAAQ,QAAQ,CAAC,KAAK,CAAC;gBAE5B,MAAM,EAAE,MAAM;CAIpC"}

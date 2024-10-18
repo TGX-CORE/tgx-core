@@ -1,0 +1,1 @@
+{"version":3,"file":"Client.d.ts","sourceRoot":"","sources":["../../../src/Builders/Client.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,gCAAgC,CAAA;AAC/D,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAA;AAEnC,qBAAa,qBAAsB,SAAQ,OAAO;IAE/B,KAAK,EAAE,cAAc,EAAE,CAAA;gBACnB,GAAG,eAAe,EAAE,cAAc,EAAE;CAI1D"}

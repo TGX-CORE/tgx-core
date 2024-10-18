@@ -1,0 +1,9 @@
+import type { ChatBoostPacket } from '../../Types/Chatboost';
+import type { Client } from '../Client';
+import { ChatBoost } from '../../Classes/ChatBoost';
+import { GenericCreator } from './GenericCreator';
+export declare class ChatBoostRemovedAction extends GenericCreator<ChatBoost, ChatBoostPacket> {
+    static pointer: string;
+    constructor(client: Client);
+}
+//# sourceMappingURL=ChatBoostRemoved.d.ts.map

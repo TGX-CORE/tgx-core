@@ -1,0 +1,1 @@
+{"version":3,"file":"EventsRegistry.js","sourceRoot":"","sources":["../../../src/Client/Registry/EventsRegistry.ts"],"names":[],"mappings":";;;AAAA,+CAA+C;AAC/C,+CAA2C;AAC3C,yCAAqC;AAGrC,MAAa,cAAe,SAAQ,mBAAe;IAI/C,YAAmB,MAAc;QAC7B,KAAK,CAAC,MAAM,EAAE,aAAK,EAAE,EAAE,IAAI,EAAE,QAAQ,EAAE,CAAC,CAAA;QAHrC,OAAE,GAAe,mBAAU,CAAC,MAAM,CAAA;IAIzC,CAAC;CAEJ;AARD,wCAQC"}
