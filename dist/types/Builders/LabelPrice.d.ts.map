@@ -1,1 +1,0 @@
-{"version":3,"file":"LabelPrice.d.ts","sourceRoot":"","sources":["../../../src/Builders/LabelPrice.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAA;AAEnC,wBAAgB,YAAY,CAAC,KAAK,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM;;;EAEzD;AAED,qBAAa,aAAc,SAAQ,OAAO;IAEvB,KAAK,EAAE,OAAO,YAAY,EAAE,CAAA;gBACxB,GAAG,MAAM,EAAE,OAAO,YAAY,EAAE;CAItD"}

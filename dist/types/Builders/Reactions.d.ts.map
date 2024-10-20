@@ -1,1 +1,0 @@
-{"version":3,"file":"Reactions.d.ts","sourceRoot":"","sources":["../../../src/Builders/Reactions.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,gBAAgB,CAAA;AACvC,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAA;AAEnC,qBAAa,SAAU,SAAQ,OAAO;IAEnB,KAAK,EAAE,MAAM,EAAE,CAAA;gBACX,GAAG,MAAM,EAAE,MAAM,EAAE;CAIzC"}

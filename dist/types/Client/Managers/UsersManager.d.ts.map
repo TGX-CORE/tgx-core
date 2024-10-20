@@ -1,1 +1,0 @@
-{"version":3,"file":"UsersManager.d.ts","sourceRoot":"","sources":["../../../../src/Client/Managers/UsersManager.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,WAAW,CAAA;AAEvC,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAA;AAC/C,OAAO,EAAE,IAAI,EAAE,MAAM,oBAAoB,CAAA;AAEzC,qBAAa,YAAa,SAAQ,aAAa,CAAC,OAAO,IAAI,CAAC;gBAErC,MAAM,EAAE,MAAM;CAIpC"}

@@ -1,1 +1,0 @@
-{"version":3,"file":"DataManager.js","sourceRoot":"","sources":["../../../src/Client/Managers/DataManager.ts"],"names":[],"mappings":";;;AAAA,sDAAkD;AAClD,+CAA2C;AAE3C,MAAa,WAAkB,SAAQ,yBAAW;IAY9C,YAAmB,MAAW,EAAE,KAAc;QAC1C,KAAK,CAAC,MAAM,CAAC,CAAA;QANjB;;WAEG;QACO,WAAM,GAAqB,IAAI,uBAAU,EAAE,CAAA;QAIjD,IAAI,CAAC,KAAK,GAAG,KAAK,CAAA;IACtB,CAAC;CAEJ;AAjBD,kCAiBC"}

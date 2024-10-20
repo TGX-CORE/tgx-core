@@ -1,1 +1,0 @@
-{"version":3,"file":"ChatJoinRequest.d.ts","sourceRoot":"","sources":["../../../../src/Client/Actions/ChatJoinRequest.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,qBAAqB,EAAE,MAAM,+BAA+B,CAAA;AACtF,OAAO,EAAE,aAAa,EAAE,MAAM,WAAW,CAAA;AAEzC,qBAAa,qBAAsB,SAAQ,aAAa;IAEpD,OAAc,OAAO,EAAE,MAAM,CAAuB;IACpC,MAAM,CAAC,MAAM,EAAE,qBAAqB,GAAG,eAAe,GAAC,IAAI;CAU9E"}

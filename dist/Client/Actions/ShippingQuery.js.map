@@ -1,1 +1,0 @@
-{"version":3,"file":"ShippingQuery.js","sourceRoot":"","sources":["../../../src/Client/Actions/ShippingQuery.ts"],"names":[],"mappings":";;;AAEA,+DAA2D;AAC3D,yDAAqD;AACrD,qDAAiD;AAEjD,MAAa,mBAAoB,SAAQ,+BAA4C;IAIjF,YAAmB,MAAc;QAC7B,KAAK,CAAC,MAAM,EAAE,6BAAa,EAAE,mBAAmB,CAAC,OAAO,CAAC,CAAA;IAC7D,CAAC;;AANL,kDAQC;AANiB,2BAAO,GAAgB,yBAAW,CAAC,aAAa,CAAA"}

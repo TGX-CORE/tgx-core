@@ -1,1 +1,0 @@
-{"version":3,"file":"PreCheckoutQuery.js","sourceRoot":"","sources":["../../../src/Client/Actions/PreCheckoutQuery.ts"],"names":[],"mappings":";;;AAEA,qEAAiE;AACjE,yDAAqD;AACrD,qDAAiD;AAEjD,MAAa,sBAAuB,SAAQ,+BAAkD;IAI1F,YAAmB,MAAc;QAC7B,KAAK,CAAC,MAAM,EAAE,mCAAgB,EAAE,sBAAsB,CAAC,OAAO,CAAC,CAAA;IACnE,CAAC;;AANL,wDAQC;AANiB,8BAAO,GAAgB,yBAAW,CAAC,gBAAgB,CAAA"}
