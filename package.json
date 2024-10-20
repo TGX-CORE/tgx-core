@@ -1,6 +1,6 @@
 {
   "name": "tgx-core",
-  "version": "v0.0.1",
+  "version": "0.0.2",
   "description": "A modern, powerful liblary for building your Telegram bots, with seamless support for both JavaScript and TypeScript.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,6 @@
   ],
   "author": "",
   "license": "ISC",
-
   "homepage": "https://tgx-core.js.org",
   "repository": {
     "type": "git",
