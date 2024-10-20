@@ -43,11 +43,9 @@ client.intialize(<bot-token>)
 
 ## Links
 
-- [TGX-CORE Developers](https://t.me/+reMnoPhHePAwODA1).
-
-- [TGX-CORE DEVs](https://t.me/tgxcore).
-
-- [Documentation](https://tgx-core.github.io/website)
+- [TGX-CORE Developers](https://t.me/+reMnoPhHePAwODA1)
+- [TGX-CORE DEVs](https://t.me/tgxcore)
+- [Documentation](https://tgx-core.js.org)
 
 ## Development Support
 For development support you may join our official Telegram support server [TGX-CORE DEVs](https://t.me/tgxcore).
