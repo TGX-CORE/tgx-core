@@ -8,12 +8,20 @@ const BaseClass_1 = require("./BaseClass");
 const File_1 = require("./File");
 class ChatBase extends BaseClass_1.BaseClass {
     /**
-     * Sends a text message to the current channel.
+     * Sends a text message to the current chat.
      *
      * @param text The text content of the message.
      */
     async sendText(text) {
         return this.send(Message_1.MessagePayloadMethod.Text, { text });
+    }
+    /**
+     * Sends the stored invoice with the id to the current chat.
+     *
+     * @param id The id of the invoice.
+     */
+    async sendInvoice(id) {
+        return this.client.invoices.send(id, this._chat);
     }
     /**
      * Sends a message to the current channel.

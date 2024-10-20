@@ -58,7 +58,7 @@ export declare enum Parseables {
 }
 /**
  * @property endpoint The method for receiving updates from Telegram.
- * @property sweep Set to *true* to sweep main directory or set to a path relative from the current working directory to sweep a specific path.
+ * @property sweep Set to *true* to sweep main directory or set to an absolute path to sweep a specific path.
  * @property registries Set to `Registries.All` to load all registries or an array of specific registries.
  */
 export interface ClientOptions {

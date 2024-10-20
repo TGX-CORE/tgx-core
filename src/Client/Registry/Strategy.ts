@@ -1,4 +1,6 @@
-import { isAbstract, classExtends } from '../../Internals/shared'
+import type { AbstractCtor } from '@sapphire/utilities'
+
+import { classExtends, isClass } from '../../Internals/shared'
 import { Piece } from '../../Classes/Piece'
 import { basename, extname } from 'path'
 import { Registry } from './Registry'
@@ -36,12 +38,12 @@ export class Strategy<T extends Piece<any>> {
     public async *load(registry: Registry<T>, file: any): AsyncIterableIterator<any> {
         let module = await this.preload(file),
             yielded = false
-        if(isAbstract(module) && classExtends(module, registry.Constructor)){
+        if(isClass(module) && classExtends(module, registry.Constructor)){
             yield module
             yielded = true
         }
         for(const exported of Object.values(module)){
-            if(isAbstract(exported) && classExtends(exported, registry.Constructor)){
+            if(isClass(exported) && classExtends(exported as AbstractCtor, registry.Constructor)){
                 yield exported
                 yielded = true
             }

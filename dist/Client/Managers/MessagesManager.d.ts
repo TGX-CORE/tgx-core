@@ -1,6 +1,6 @@
-import type { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../../Types/File';
 import type { ChatBackground, ForumTopicClosed, ForumTopicCreated, ForumTopicEdited, ForumTopicReopened, GeneralForumTopicHidden, GeneralForumTopicUnhidden, Giveaway, GiveawayCompleted, GiveawayCreated, GiveawayWinners, VideoChatEnded, VideoChatParticipantsInvited, VideoChatScheduled, VideoChatStarted } from '../../Types/Chat';
 import type { ContactPayload, CopyMessagePayload, DicePayload, ExternalReplyInfo, InaccessibleMessage, MessageAutoDeleteTimerChanged, MessageOrigin, MessageReactionPayload, PaidMediaInfo, VenuePayload } from '../../Types/Message';
+import type { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../../Types/File';
 import type { ChatShared, GamePacket, ProximityAlertTriggered, RefundedPaymentPacket, StoryPacket, TextQuote, UsersShared, WebAppData, WriteAccessAllowed } from '../../Types/Common';
 import type { InlineKeyboardMarkup } from '../../Builders/InlineKeyboard';
 import type { LinkPreviewOptions } from '../../Types/InputMessageContent';
@@ -9,13 +9,13 @@ import type { MessageEntities } from '../../Builders/MessageEntities';
 import type { MessageEntityPayload } from '../../Types/MessageEntity';
 import type { InputMediaBuilder } from '../../Builders/InputMedia';
 import type { BaseChat, ChatPacket } from '../../Classes/BaseChat';
+import type { InvoicePacket } from '../../Types/Invoice';
 import type { PassportData } from '../../Types/Passport';
 import type { PollPacket } from '../../Classes/Poll';
 import type { UserPacket } from '../../Classes/User';
+import { ChatBoostAdded } from '../../Types/Chatboost';
 import { CachedManager } from './CachedManager';
 import { Message } from '../../Classes/Message';
-import { SendInvoicePayload } from '../../Types/Invoice';
-import { ChatBoostAdded } from '../../Types/Chatboost';
 export interface ForwardPayload {
     chat_id: string | number;
     message_thread_id?: number;
@@ -95,7 +95,7 @@ export interface MessagePacket {
     migrate_to_chat_id?: number;
     migrate_from_chat_id?: number;
     pinned_message?: InaccessibleMessage;
-    invoice?: SendInvoicePayload;
+    invoice?: InvoicePacket;
     successful_payment?: SuccessfulPayment;
     refunded_payment?: RefundedPaymentPacket;
     users_shared?: UsersShared;

@@ -12,19 +12,28 @@ export abstract class ChatBase<T, P> extends BaseClass<T, P> {
     /**
      * @hidden
      */
-    protected _chat: number|undefined
+    protected declare _chat: number
 
-    public message_thread_id: number|undefined
+    public message_thread_id?: number
 
     public abstract id: number
 
     /**
-     * Sends a text message to the current channel.
+     * Sends a text message to the current chat.
      * 
      * @param text The text content of the message.
      */
     public async sendText(text: string) {
         return this.send(MessagePayloadMethod.Text, { text })
+    }
+
+    /**
+     * Sends the stored invoice with the id to the current chat.
+     * 
+     * @param id The id of the invoice.
+     */
+    public async sendInvoice(id: string) {
+        return this.client.invoices.send(id, this._chat)
     }
 
     /**

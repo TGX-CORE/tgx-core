@@ -62,6 +62,14 @@ class Message extends BaseClass_1.BaseClass {
         return this.reply(Message_1.MessagePayloadMethod.Text, { text });
     }
     /**
+     * Replies an invoice message to the currenct message. Uses auxiliaries.
+     *
+     * @param id The id of the invoice.
+     */
+    async replyInvoice(id) {
+        return this.reply(Message_1.MessagePayloadMethod.Invoice, { ...this.client.invoices.generate(id) });
+    }
+    /**
      * Replies a message to the current message.
      *
      * @param pointer The type or method of the message.

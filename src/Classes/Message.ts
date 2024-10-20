@@ -4,6 +4,7 @@ import type { MessagePayload, Chat, CopyMessagePayload } from '../Types/Message'
 import type { MessagesManager } from '../Client/Managers/MessagesManager'
 import type { MessageEntityPayload } from '../Types/MessageEntity'
 import type { FormDataBuilder } from '../Builders/FormData'
+import type { SendInvoicePayload } from '../Types/Invoice'
 import type { Client } from '../Client/Client'
 import type { ForumTopic } from './ForumTopic'
 
@@ -107,6 +108,15 @@ export class Message extends BaseClass<Message, MessagePacket> implements Omit<M
      */
     public async replyText(text: string): Promise<Message|boolean> {
         return this.reply(MessagePayloadMethod.Text, { text })
+    }
+
+    /**
+     * Replies an invoice message to the currenct message. Uses auxiliaries.
+     * 
+     * @param id The id of the invoice.
+     */
+    public async replyInvoice(id: string){
+        return this.reply(MessagePayloadMethod.Invoice, { ...this.client.invoices.generate(id) } as SendInvoicePayload)
     }
 
     /**

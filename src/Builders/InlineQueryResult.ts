@@ -1,5 +1,4 @@
 import type { InlineQueryResult } from '../Types/InlineQueryResult'
-import type { WebAppInfo } from '../Types/InlineQuery'
 import { Builder } from './Builder'
 
 export class InlineQueryResults extends Builder {

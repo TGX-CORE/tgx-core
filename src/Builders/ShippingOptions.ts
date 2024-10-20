@@ -1,4 +1,5 @@
-import type { LabeledPrices, LabeledPrice } from './LabeledPrices'
+import type { LabeledPrices } from './LabeledPrices'
+import type { LabeledPrice } from '../Types/Invoice'
 
 import { Builder } from './Builder'
 
@@ -34,7 +35,7 @@ export class ShippingOptions extends Builder {
      * @param prices List of price portions.
      */
     public add(id: string, title: string, prices: LabeledPrices|LabeledPrice[]){
-        this.value.push({ id, title, prices: (!Array.isArray(prices) ? prices.value : prices) })
+        this.value.push({ id, title, prices: prices })
         return this
     }
 

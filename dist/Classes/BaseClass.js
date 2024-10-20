@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseClass = void 0;
+const shared_1 = require("../Internals/shared");
 const Base_1 = require("./Base");
 class BaseClass {
     constructor(client, packet) {
@@ -34,7 +35,7 @@ class BaseClass {
      */
     get defaults() {
         return (defaults, context = this, top_layer) => {
-            return defaults(defaults, context, top_layer);
+            return (0, shared_1.defaults)(defaults, context, top_layer);
         };
     }
     /**

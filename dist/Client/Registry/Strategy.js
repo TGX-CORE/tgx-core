@@ -34,12 +34,12 @@ class Strategy {
     }
     async *load(registry, file) {
         let module = await this.preload(file), yielded = false;
-        if ((0, shared_1.isAbstract)(module) && (0, shared_1.classExtends)(module, registry.Constructor)) {
+        if ((0, shared_1.isClass)(module) && (0, shared_1.classExtends)(module, registry.Constructor)) {
             yield module;
             yielded = true;
         }
         for (const exported of Object.values(module)) {
-            if ((0, shared_1.isAbstract)(exported) && (0, shared_1.classExtends)(exported, registry.Constructor)) {
+            if ((0, shared_1.isClass)(exported) && (0, shared_1.classExtends)(exported, registry.Constructor)) {
                 yield exported;
                 yielded = true;
             }

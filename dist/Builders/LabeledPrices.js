@@ -5,9 +5,10 @@ const Builder_1 = require("./Builder");
 class LabeledPrices extends Builder_1.Builder {
     /**
      * @param prices An array of labeled prices representing a portion of the price.
+     * @param parse Pass *true* to return raw json, for internal purposes only.
      */
     constructor(...prices) {
-        super({ value: prices, parseVal: true });
+        super({ value: prices });
     }
     /**
      * Adds a portion of a price to the list.

@@ -1,6 +1,6 @@
-import type { CreateInvoiceLinkPayload, SendInvoicePayload, StoredInvoice } from '../../Types/Invoice';
+import type { CreateInvoiceLinkPayload, SendInvoicePayload } from '../../Types/Invoice';
+import type { Invoice } from '../../Builders/Invoice';
 import type { Message } from '../../Classes/Message';
-import type { Invoice } from '../../Classes/Invoice';
 import type { Client } from '../Client';
 import { CachedManager } from './CachedManager';
 export declare class InvoicesManager extends CachedManager<string, Invoice> {
@@ -27,7 +27,7 @@ export declare class InvoicesManager extends CachedManager<string, Invoice> {
      * @param id The id of the invoices to store as.
      * @param invoice The payload of the invoice.
      */
-    create(id: string, invoice: StoredInvoice): any;
+    create(id: string, invoice: Invoice): any;
     /**
      * Creates an invoice link and store it in the manager.
      *

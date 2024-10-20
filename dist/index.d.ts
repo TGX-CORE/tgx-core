@@ -60,6 +60,7 @@ export * from './Builders/LabeledPrices';
 export * from './Builders/PollOptions';
 export * from './Builders/Reactions';
 export * from './Builders/FormData';
+export * from './Builders/Invoice';
 export * from './Types/InputMessageContent';
 export * from './Types/BusinessConnection';
 export * from './Types/InlineQueryResult';

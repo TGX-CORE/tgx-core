@@ -48,6 +48,12 @@ export declare class Message extends BaseClass<Message, MessagePacket> implement
      */
     replyText(text: string): Promise<Message | boolean>;
     /**
+     * Replies an invoice message to the currenct message. Uses auxiliaries.
+     *
+     * @param id The id of the invoice.
+     */
+    replyInvoice(id: string): Promise<boolean | Message>;
+    /**
      * Replies a message to the current message.
      *
      * @param pointer The type or method of the message.

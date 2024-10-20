@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.has = has;
-exports.isAbstract = isAbstract;
 exports.isClass = isClass;
 exports.isJson = isJson;
 exports.classExtends = classExtends;
@@ -19,20 +18,13 @@ function has(array = [], value) {
         : array.some((v) => v === value);
 }
 /**
- * Checks whether the value is an abstract constructor.
- *
- * @param value The value to check.
- */
-function isAbstract(value) {
-    return typeof value === 'function' && typeof value.prototype === 'object';
-}
-/**
- * Checks whether the value is a class.
+ * Checks whether the value is a class or an instance of a class.
  *
  * @param value The value to check.
  */
 function isClass(value) {
-    return typeof value === "object" && (/^(object|array)$/i.test(value.constructor.name) === false);
+    return typeof value === 'object' && value !== null && Object.getPrototypeOf(value) !== Object.prototype ||
+        typeof value === 'function' && typeof value.prototype === 'object';
 }
 /**
  * Checks whether the value is a JSON.
@@ -54,31 +46,26 @@ function classExtends(value, base) {
 /**
  * Sets the default values of the default object to the context
  *
- * @param defaults The default values.
+ * @param _defaults The default values.
  * @param context The context to replace with defaults.
  * @param topLayer Pass true to ignore nested objects.
  * @returns context
  */
-function defaults(defaults, context = {}, topLayer) {
-    for (const key in defaults) {
+function defaults(_defaults, context = {}, topLayer) {
+    for (let [key, value] of Object.entries(_defaults)) {
         const descriptor = Object.getOwnPropertyDescriptor(context, key);
         if (descriptor && (typeof descriptor.get === 'function' || !descriptor.configurable || !descriptor.writable))
             continue;
-        if (context[key] === undefined || context[key] === null) {
-            context[key] = defaults[key];
+        if (value === undefined || value === null) {
+            context[key] = value;
         }
         else {
-            if (typeof defaults[key] === 'object') {
-                if (isJson(defaults[key]) && !topLayer) {
-                    context[key] = defaults(defaults[key], context[key]);
-                }
-                else {
-                    context[key] = defaults[key];
-                }
+            if (typeof value === 'object' && isJson(value) && !topLayer) {
+                context[key] = defaults(value, context[key]);
             }
             else {
-                if (typeof context[key] === typeof defaults[key]) {
-                    context[key] === defaults[key];
+                if (typeof value !== typeof context[key]) {
+                    context[key] = value;
                 }
             }
         }
@@ -86,25 +73,32 @@ function defaults(defaults, context = {}, topLayer) {
     return context;
 }
 /**
- * Reads an object including nested objects but ignores classes and arrays.
+ * Reads an object including nested objects but ignores classes, Return the duplicated and modified object.
  *
- * @param object The object to read.
+ * @param object The object to read and nest.
  * @param additional Additional options on how to read the object.
- * @param fn The callback function to call whenever a key and value has been read.
+ * @param fn The callback function to call whenever a key and value has been read. Additional information is available.
  */
-function nest(object, additional, fn) {
+function nest(object = {}, additional, fn) {
+    let output = additional.merge ? object : {}, returned;
     for (let [key, value] of Object.entries(object)) {
         if (isJson(value)) {
-            if (additional.top) {
-                fn(key, value);
+            if (!additional.top) {
+                additional.array ? fn('json', key, value) : fn(key, value);
+                output[key] = nest(value, additional, fn);
                 continue;
             }
-            object[key] = nest(value, additional, fn);
+            returned = additional.array ? fn('json', key, value) : fn(key, value);
+            output[key] = returned !== undefined ? returned : value;
+            continue;
         }
-        else {
-            object[key] = fn(key, value) ?? value;
+        else if (Array.isArray(value) && additional.array) {
+            output[key] = value.map((v, i) => fn('array', i, v) ?? v);
+            continue;
         }
+        returned = additional.array ? fn('json', key, value) : fn(key, value);
+        output[key] = returned !== undefined ? returned : value;
     }
-    return;
+    return output;
 }
 //# sourceMappingURL=shared.js.map

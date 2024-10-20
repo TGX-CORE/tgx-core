@@ -41,16 +41,13 @@ client.on('text', (message) => {
 client.intialize(<bot-token>)
 ```
 
-## Documentation
+## Links
 
-For more information, you may visit the [documentation](https://tgx-core.github.io/website/).
+- [TGX-CORE Developers](https://t.me/+reMnoPhHePAwODA1).
 
-## Support Platforms
+- [TGX-CORE DEVs](https://t.me/tgxcore).
 
-You may join us on the offical groups on the Telegram platform.
+- [Documentation](https://tgx-core.github.io/website)
 
-For announcements, you may join:
-[TGX-CORE Developers](https://t.me/+reMnoPhHePAwODA1)
-
-For development supports, you may join:
-[TGX-CORE DEVs](https://t.me/tgxcore)
+## Development Support
+For development support you may join our official Telegram support server [TGX-CORE DEVs](https://t.me/tgxcore).

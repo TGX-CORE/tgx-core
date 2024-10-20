@@ -1,6 +1,7 @@
 import type { Client } from '../Client'
 
 import { Builder } from '../../Builders/Builder'
+import { defaults, nest } from '../../Internals/shared'
 import { BaseManager } from './BaseManager'
 
 import axios, { type AxiosInstance } from 'axios'
@@ -177,12 +178,16 @@ export class APIManager extends BaseManager<APIManagerOptions> {
 
     public async request(URL: string, method: AxiosMethod, ...argumants: any[]): Promise<any> {
         return new Promise((resolve) => {
-            
-            argumants[1] = this.defaults({
+            argumants[1] = defaults({
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded'
                 }
-            }, this.serialize(argumants[1]))
+            }, nest(argumants[1], { array: true }, (type, key, value) => {
+                if(value instanceof Builder){
+                    return value.parse()
+                }
+                return value
+            }))
 
             this.axios[method](URL, ...argumants)
                 .then((response: any) => {
@@ -200,19 +205,6 @@ export class APIManager extends BaseManager<APIManagerOptions> {
                     resolve(false)
                 })
         })
-    }
-
-    public serialize(object: any, output: any = { }): any {
-        for(let key in object){
-            if(object[key] instanceof Builder){
-                output[key] = object[key].parse()
-            } else if(typeof object[key] === 'object' && !Array.isArray(object[key])){
-                output[key] = this.serialize(object[key], output[key])
-            } else {
-                output[key] = object[key]
-            }
-        }
-        return output
     }
 
     public setToken(token: string){

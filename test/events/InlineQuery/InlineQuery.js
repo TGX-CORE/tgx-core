@@ -1,4 +1,4 @@
-const { Event, InlineQueryResult, InlineQueryResults, InlineQueryResultButton, LabeledPrices, LabeledPrice, Input, InlinequeryResultButton, ClientEvent, QueryResult } = require('tgx-core')
+const { Event, InlineQueryResult, InlineQueryResults, InlineQueryResultButton, LabeledPrices, LabeledPrice, InlinequeryResultButton, ClientEvent, QueryResult, InputMessage } = require('tgx-core')
 
 class InlineQuery extends Event {
 
@@ -14,21 +14,17 @@ class InlineQuery extends Event {
             new QueryResult.Article({
                 id: 'article-1',
                 title: `Dynamic Article Result - ${inlineQuery.query}`,
-                input_message_content: {
-                    message_text: `Your query is ${inlineQuery.query}`,
-                }
+                input_message_content: new InputMessage.Text({ message_text: `Your query is ${inlineQuery.query}` })
             }),
             new QueryResult.Article({
                 id: 'poll',
                 title: `Test Poll`,
-                input_message_content: {
-                    message_text: 'Poll request.'
-                }
+                input_message_content: new InputMessage.Text({ message_text: 'Hey there!' })
             }),
             new QueryResult.Article({
                 id: 'invoice',
                 title: 'Text Invoice',
-                input_message_content: new Input.Invoice(this.client.invoices.generate('invoice_id_1'))
+                input_message_content: new InputMessage.Invoice(this.client.invoices.generate('invoice_1'))
             }),
             new QueryResult.CachedPhoto({
                 id: 'photo-result',

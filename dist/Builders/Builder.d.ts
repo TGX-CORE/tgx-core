@@ -1,4 +1,4 @@
-export declare class Builder<Payload extends object = any> {
+export declare class Builder {
     /**
      * @hidden
      */
@@ -11,7 +11,7 @@ export declare class Builder<Payload extends object = any> {
      * @hidden
     */
     parseArray?: boolean;
-    constructor(packet: Payload);
+    constructor(packet: any);
     /**
      * @hidden
      */

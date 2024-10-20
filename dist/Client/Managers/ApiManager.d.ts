@@ -18,7 +18,6 @@ export declare class APIManager extends BaseManager<APIManagerOptions> {
     private acknowledge;
     private generate;
     request(URL: string, method: AxiosMethod, ...argumants: any[]): Promise<any>;
-    serialize(object: any, output?: any): any;
     setToken(token: string): void;
     get token(): string;
 }

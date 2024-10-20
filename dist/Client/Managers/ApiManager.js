@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.APIManager = void 0;
 const Builder_1 = require("../../Builders/Builder");
+const shared_1 = require("../../Internals/shared");
 const BaseManager_1 = require("./BaseManager");
 const axios_1 = __importDefault(require("axios"));
 const node_https_1 = __importDefault(require("node:https"));
@@ -137,11 +138,16 @@ class APIManager extends BaseManager_1.BaseManager {
     }
     async request(URL, method, ...argumants) {
         return new Promise((resolve) => {
-            argumants[1] = this.defaults({
+            argumants[1] = (0, shared_1.defaults)({
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded'
                 }
-            }, this.serialize(argumants[1]));
+            }, (0, shared_1.nest)(argumants[1], { array: true }, (type, key, value) => {
+                if (value instanceof Builder_1.Builder) {
+                    return value.parse();
+                }
+                return value;
+            }));
             this.axios[method](URL, ...argumants)
                 .then((response) => {
                 const options = argumants[1];
@@ -159,20 +165,6 @@ class APIManager extends BaseManager_1.BaseManager {
                 resolve(false);
             });
         });
-    }
-    serialize(object, output = {}) {
-        for (let key in object) {
-            if (object[key] instanceof Builder_1.Builder) {
-                output[key] = object[key].parse();
-            }
-            else if (typeof object[key] === 'object' && !Array.isArray(object[key])) {
-                output[key] = this.serialize(object[key], output[key]);
-            }
-            else {
-                output[key] = object[key];
-            }
-        }
-        return output;
     }
     setToken(token) {
         this._token = token;

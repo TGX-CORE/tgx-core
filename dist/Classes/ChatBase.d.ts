@@ -8,15 +8,21 @@ export declare abstract class ChatBase<T, P> extends BaseClass<T, P> {
     /**
      * @hidden
      */
-    protected _chat: number | undefined;
-    message_thread_id: number | undefined;
+    protected _chat: number;
+    message_thread_id?: number;
     abstract id: number;
     /**
-     * Sends a text message to the current channel.
+     * Sends a text message to the current chat.
      *
      * @param text The text content of the message.
      */
     sendText(text: string): Promise<Message>;
+    /**
+     * Sends the stored invoice with the id to the current chat.
+     *
+     * @param id The id of the invoice.
+     */
+    sendInvoice(id: string): Promise<void | Message>;
     /**
      * Sends a message to the current channel.
      *

@@ -18,7 +18,7 @@ class ShippingOptions extends Builder_1.Builder {
      * @param prices List of price portions.
      */
     add(id, title, prices) {
-        this.value.push({ id, title, prices: (!Array.isArray(prices) ? prices.value : prices) });
+        this.value.push({ id, title, prices: prices });
         return this;
     }
 }

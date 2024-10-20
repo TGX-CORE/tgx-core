@@ -119,7 +119,7 @@ export class Client extends BaseClient {
     this.invoices.setToken(provider_token)
 
     if(this.options.sweep !== null){
-      this.registries.registerPath(typeof this.options.sweep == 'string' ? join(process.cwd(), this.options.sweep) : undefined)
+      this.registries.registerPath(typeof this.options.sweep == 'string' ? this.options.sweep : undefined)
     }
 
     this.registries.forEach(async (registry: Registry<any>) => {

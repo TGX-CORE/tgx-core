@@ -76,6 +76,7 @@ __exportStar(require("./Builders/LabeledPrices"), exports);
 __exportStar(require("./Builders/PollOptions"), exports);
 __exportStar(require("./Builders/Reactions"), exports);
 __exportStar(require("./Builders/FormData"), exports);
+__exportStar(require("./Builders/Invoice"), exports);
 __exportStar(require("./Types/InputMessageContent"), exports);
 __exportStar(require("./Types/BusinessConnection"), exports);
 __exportStar(require("./Types/InlineQueryResult"), exports);

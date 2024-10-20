@@ -1,6 +1,6 @@
-import type { CreateInvoiceLinkPayload, SendInvoicePayload, StoredInvoice } from '../../Types/Invoice'
+import type { CreateInvoiceLinkPayload, SendInvoicePayload } from '../../Types/Invoice'
+import type { Invoice } from '../../Builders/Invoice' 
 import type { Message } from '../../Classes/Message'
-import type { Invoice } from '../../Classes/Invoice' 
 import type { Client } from '../Client'
 
 import { CachedManager } from './CachedManager'
@@ -35,7 +35,7 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
         return stored ?
             typeof stored === 'string' ?
                 stored
-            :   { ...stored, provider_token: this.provider_token }
+            :   stored.setProviderToken(this.provider_token!) as unknown as SendInvoicePayload
         : false
     }
 
@@ -45,9 +45,11 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
      * @param id The id of the invoices to store as.
      * @param invoice The payload of the invoice.
      */
-    public create(id: string, invoice: StoredInvoice){
-        const { prices: { value }, ...others } = invoice
-        return this._add({ ...others, prices: value }, true, { id })
+    public create(id: string, invoice: Invoice){
+        return this._add(
+            invoice
+                .setPayload(invoice.payload ?? id)
+        , true, { id })
     }
     
     /**
@@ -78,18 +80,17 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
      */
     public async send(id: string, chat_id: number): Promise<Message|void> {
         const invoice = this.generate(id)
-        if( typeof invoice === 'string' ) return this.client.logger.error('[InvoicesManager - send] You can only send an invoice and not an invoice link!')
-        if( invoice ){
-            const result = await this.client.api.sendInvoice(null, {
-                params: { ...invoice, chat_id },
-                lean: true,
-                result: true
-            })
 
-            return result ? this.client.actions.message.handle(result, false) : null
-        }
+        if( !invoice ) return this.client.logger.error('[InvoicesManager - send(' + id + ')] You don\'t have an invoice  stored.')
+        if( typeof invoice === 'string' ) return this.client.logger.error('[InvoicesManager - send(' + id + ')] You can only send an invoice and not an invoice link!')
+        
+        const result = await this.client.api.sendInvoice(null, {
+            params: { ...invoice, chat_id },
+            lean: true,
+            result: true
+        })
 
-        return this.client.logger.error(`There is no invoice stored with the id: ${ id }.`)
+        return result ? this.client.actions.message.handle(result, false) : null
     }
 
 }

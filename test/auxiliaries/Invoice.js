@@ -1,4 +1,4 @@
-const { Auxiliary, Auxiliaries, LabeledPrices } = require('tgx-core')
+const { Auxiliary, Auxiliaries, Invoice } = require('tgx-core')
 
 class Invoices extends Auxiliary {
 
@@ -11,14 +11,15 @@ class Invoices extends Auxiliary {
 
     load(invoices){
 
-        invoices.create('invoice_id_1', {
-            payload: 'invoice_id_1',
-            title: 'Test Product',
-            description: 'This is a test product for sending invoices.',
-            currency: 'USD',
-            prices: new LabeledPrices()
-                .add('Price', '1480') // $14.80
-        })
+        invoices.create('invoice_1', 
+            new Invoice(
+                'Limited Edition Chibi',
+                'Get this limited adition chibi!',
+                'usd'
+            )
+            .addPrice('Chibi', '1480')
+            .addPrice('Tax', '180')
+        )
         
     }
 

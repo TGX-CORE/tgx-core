@@ -24,7 +24,7 @@ class InvoicesManager extends CachedManager_1.CachedManager {
         return stored ?
             typeof stored === 'string' ?
                 stored
-                : { ...stored, provider_token: this.provider_token }
+                : stored.setProviderToken(this.provider_token)
             : false;
     }
     /**
@@ -34,8 +34,8 @@ class InvoicesManager extends CachedManager_1.CachedManager {
      * @param invoice The payload of the invoice.
      */
     create(id, invoice) {
-        const { prices: { value }, ...others } = invoice;
-        return this._add({ ...others, prices: value }, true, { id });
+        return this._add(invoice
+            .setPayload(invoice.payload ?? id), true, { id });
     }
     /**
      * Creates an invoice link and store it in the manager.
@@ -64,17 +64,16 @@ class InvoicesManager extends CachedManager_1.CachedManager {
      */
     async send(id, chat_id) {
         const invoice = this.generate(id);
+        if (!invoice)
+            return this.client.logger.error('[InvoicesManager - send(' + id + ')] You don\'t have an invoice  stored.');
         if (typeof invoice === 'string')
-            return this.client.logger.error('[InvoicesManager - send] You can only send an invoice and not an invoice link!');
-        if (invoice) {
-            const result = await this.client.api.sendInvoice(null, {
-                params: { ...invoice, chat_id },
-                lean: true,
-                result: true
-            });
-            return result ? this.client.actions.message.handle(result, false) : null;
-        }
-        return this.client.logger.error(`There is no invoice stored with the id: ${id}.`);
+            return this.client.logger.error('[InvoicesManager - send(' + id + ')] You can only send an invoice and not an invoice link!');
+        const result = await this.client.api.sendInvoice(null, {
+            params: { ...invoice, chat_id },
+            lean: true,
+            result: true
+        });
+        return result ? this.client.actions.message.handle(result, false) : null;
     }
 }
 exports.InvoicesManager = InvoicesManager;

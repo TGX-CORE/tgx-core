@@ -10,40 +10,19 @@ class Builder {
      * @hidden
      */
     parse({ parseVal, parseArray, returnValue, value } = this) {
-        let parsed;
         if (returnValue)
             return value;
         if (Array.isArray(value)) {
-            parsed = [];
-            for (let val of value) {
-                if (Array.isArray(val)) {
-                    parsed.push(this.parse({ value: val }));
-                    continue;
-                }
-                if (val instanceof Builder) {
-                    parsed.push(val.parse());
-                    continue;
-                }
-                parsed.push(val);
-            }
-            return parseVal || parseArray ? JSON.stringify(parsed) : parsed;
+            value.map((v) => this.parse({ parseArray, value: v }));
+            return parseVal || parseArray ? JSON.stringify(value) : value;
         }
-        else {
-            parsed = {};
-            for (let val in value) {
-                if (value[val] instanceof Builder) {
-                    parsed[val] = value[val].parse();
-                }
-                else {
-                    if (Array.isArray(value[val])) {
-                        parsed[val] = this.parse({ parseArray, value: value[val] });
-                        continue;
-                    }
-                    parsed[val] = value[val];
-                }
-            }
-            return parseVal ? JSON.stringify(parsed) : parsed;
+        else if ((0, shared_1.isJson)(value)) {
+            (0, shared_1.nest)(value, { merge: true, array: true }, (type, key, v) => {
+                return this.parse({ parseArray, value: v });
+            });
+            return parseVal ? JSON.stringify(value) : value;
         }
+        return value instanceof Builder ? value.parse() : value;
     }
 }
 exports.Builder = Builder;

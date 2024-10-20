@@ -1,4 +1,5 @@
-import type { LabeledPrices, LabeledPrice } from './LabeledPrices';
+import type { LabeledPrices } from './LabeledPrices';
+import type { LabeledPrice } from '../Types/Invoice';
 import { Builder } from './Builder';
 /**
  * This object represents one shipping option.

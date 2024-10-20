@@ -1,11 +1,9 @@
 {
   "name": "tgx-core",
-  "version": "v0.0.1-alpha.0",
+  "version": "v0.0.1",
   "description": "A modern, powerful liblary for building your Telegram bots, with seamless support for both JavaScript and TypeScript.",
-  
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-
   "dependencies": {
     "@discordjs/collection": "^2.1.0",
     "@sapphire/utilities": "^3.17.0",
@@ -16,23 +14,25 @@
     "typescript": "^5.5.4",
     "undici-types": "^6.19.8"
   },
-
   "devDependencies": {
     "@types/node": "^22.5.0",
     "tslib": "^2.7.0"
   },
-
   "scripts": {
     "test": "node ./test/index.js"
   },
-
   "keywords": [
     "telegram",
     "javascript",
     "typescript",
     "framework"
   ],
-  
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+
+  "homepage": "https://tgx-core.github.io/website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TGX-CORE/tgx-core.git"
+  }
 }

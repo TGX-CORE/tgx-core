@@ -97,6 +97,7 @@ export class PollManager extends BaseManager<PollManagerOptions> {
             ignore_bots: true,
             ignore_sender_chats: false
         })
+
     }
 
     /**

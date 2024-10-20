@@ -1,6 +1,6 @@
 import type { Client } from '../Client/Client'
 
-import { defaults } from '../Internals/shared'
+import { defaults as _defaults } from '../Internals/shared'
 import { Base } from './Base'
 
 export abstract class BaseClass<T, P> {
@@ -45,7 +45,7 @@ export abstract class BaseClass<T, P> {
    */
   public get defaults(){
     return (defaults: any, context: any = this, top_layer?: boolean) => {
-      return defaults(defaults, context, top_layer)
+      return _defaults(defaults, context, top_layer)
     }
   }
 
