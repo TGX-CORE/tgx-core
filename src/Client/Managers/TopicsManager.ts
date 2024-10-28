@@ -2,6 +2,7 @@ import type { SuperGroupChat } from '../../Classes/SuperGroupChat'
 
 import { ForumTopic } from '../../Classes/ForumTopic'
 import { CachedManager } from './CachedManager'
+import { Routes } from '../../Types/Routes'
 
 export class TopicsManager extends CachedManager<number, ForumTopic> {
 
@@ -14,89 +15,64 @@ export class TopicsManager extends CachedManager<number, ForumTopic> {
     }
 
     public async create(name: string, icon_color?: number, icon_custom_emoji_id?: string): Promise<ForumTopic|boolean> {
-        const result = await this.client.api.createForumTopic(null, {
-            params: { chat_id: this.chat.id, name, icon_color, icon_custom_emoji_id },
-            lean: true,
-            result: true
-        })
-        if(!result) return false
-        return this._add(new ForumTopic(this.client, result), true, { id: result.message_thread_id })
+        let { chat: { id: chat_id } } = this
+        let response = await this.client.rest.post(Routes.CreateForumTopic, { chat_id, name, icon_color, icon_custom_emoji_id })
+        if(!response) return false
+        return this._add(new ForumTopic(this.client, response), true, { id: response.message_thread_id })
     }
 
     public async edit(message_thread_id: number, name?: string, icon_custom_emoji_id?: string): Promise<boolean> {
-        return this.client.api.editForumTopic(null, {
-            params: { chat_id: this.chat.id, message_thread_id, name, icon_custom_emoji_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.EditForumTopic, { chat_id, message_thread_id, name, icon_custom_emoji_id }, { ok: true })
     }
 
     public async editGeneral(name: string): Promise<boolean> {
-        return this.client.api.editGeneralForumTopic(null, {
-            params: { chat_id: this.chat.id, name },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.EditGeneralForumTopic, { chat_id , name }, { ok: true })
     }
 
     public async close(message_thread_id: number): Promise<boolean> {
-        return this.client.api.closeForumTopic(null, {
-            params: { chat_id: this.chat.id, message_thread_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.CloseForumTopic, { chat_id, message_thread_id }, { ok: true })
     }
 
     public async closeGeneral(): Promise<boolean> {
-        return this.client.api.closeGeneralForumTopic(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.CloseGeneralForumTopic, { chat_id }, { ok: true })
     }
 
     public async reopen(message_thread_id: number): Promise<boolean> {
-        return this.client.api.reopenForumTopic(null, {
-            params: { chat_id: this.chat.id, message_thread_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.ReopenForumTopic, { chat_id, message_thread_id }, { ok: true })
     }
 
     public async reopenGeneral(): Promise<boolean> {
-        return this.client.api.reopenGeneralForumTopic(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.ReopenGeneralForumTopic, { chat_id }, { ok: true })
     }
 
     public async hideGeneral(): Promise<boolean> {
-        return this.client.api.hideGeneralForumTopic(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.HideGeneralForumTopic, { chat_id }, { ok: true })
     }
     public async unhideGeneral(): Promise<boolean> {
-        return this.client.api.unhideGeneralForumTopic(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.UnhideGeneralForumTopic, { chat_id }, { ok: true })
     }
 
     public async delete(message_thread_id: number): Promise<boolean> {
-        return this.client.api.deleteForumTopic(null, {
-            params: { chat_id: this.chat.id, message_thread_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.DeleteForumTopic, { chat_id, message_thread_id }, { ok: true })
     }
 
     public async unpinAll(message_thread_id: number): Promise<boolean> {
-        return this.client.api.unpinAllForumTopicMessages(null, {
-            params: { chat_id: this.chat.id, message_thread_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.UnpinAllForumTopicMessages, { chat_id, message_thread_id }, { ok: true })
     }
 
     public async unpinAllGeneral(): Promise<boolean> {
-        return this.client.api.unpinAllGeneralForumTopicMessages(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.UnpinAllGeneralForumTopicMessages, { chat_id }, { ok: true })
     }
 
 }

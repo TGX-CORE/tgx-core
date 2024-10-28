@@ -1,34 +1,36 @@
-import type { AbstractConstructor } from '@sapphire/utilities'
+import type { Client } from '../../Client/Client'
+import type { Piece } from '../../Classes/Piece'
+
+import { AbstractConstructor } from '../../Internals/shared'
 import { Collection } from '@discordjs/collection'
+import { Strategy } from './Strategy'
+
 import { promises } from 'fs'
 import { join } from 'path'
-
-import { Piece } from '../../Classes/Piece'
-import { Strategy } from './Strategy'
-import { Client } from '../Client'
-import { Registries } from '../../Types/Client'
+import { Registries } from '../Registries'
 
 export interface RegistryOptions {
     name: string
 }
 
-export class Registry<T extends Piece<any>> extends Collection<string, any> {
+export abstract class Registry<K, T extends Piece<any>> extends Collection<K, T> {
 
-    
     public Constructor: AbstractConstructor<T>
-    public strategy: Strategy<T> = new Strategy()
-    
-    public id?: Registries
 
-    public client: Client
-    public name: string
+    public declare readonly registry: Registries
+
     public paths: Set<string>
+    public name: string
 
-    public constructor(client: Client, constructor: AbstractConstructor<T>, options: RegistryOptions) {
+    public strategy: Strategy<K, T> = new Strategy()
+
+    public constructor(registry: Registries, constructor: AbstractConstructor<T>, options: RegistryOptions){
         super()
+
+        Object.defineProperty(this, 'registry', { value: registry })
+
         this.paths = new Set()
         this.name = options.name
-        this.client = client
         this.Constructor = constructor
     }
 
@@ -56,14 +58,15 @@ export class Registry<T extends Piece<any>> extends Collection<string, any> {
                 if( module ) registries.push(module)
             }
         }
+        
         for(const registry of registries){
             this.insert(registry)
         }
     }
 
-    public unload(name: string|T): T {
+    public unload(name: K|T): T {
         const piece = this.resolve(name)
-        this.delete(piece.name)
+        this.delete(piece.name as K)
         return piece
     }
 
@@ -94,19 +97,23 @@ export class Registry<T extends Piece<any>> extends Collection<string, any> {
         }
     }
 
-    public resolve(resolve: string|T): T {
+    public resolve(resolve: K|T): T {
         if(typeof resolve === 'string'){
             const resolved = this.get(resolve)
             if(typeof resolved === undefined) throw 'Resolve cannot be found.'
-            return resolved
+            return resolved!
         }
         if(resolve instanceof this.Constructor) return resolve
         throw 'Resolve cannot be found.'
     }
 
+    public get client(): Client {
+        return this.registry.client
+    }
+
     private async insert(insert: T): Promise<T> {
         insert.onLoad()
-        this.set(insert.name, insert)
+        this.set(insert.name as K, insert)
         return insert
     }
 

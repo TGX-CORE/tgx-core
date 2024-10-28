@@ -1,4 +1,5 @@
 import type { Chat } from '../../Types/Message'
+import { Routes } from '../../Types/Routes'
 import type { Client } from '../Client'
 
 import { CachedManager } from './CachedManager'
@@ -26,11 +27,8 @@ export class ChatsManager extends CachedManager<number, Chat> {
     }
 
     public async fetch(chat_id: number): Promise<Chat|boolean> {
-        var message = await this.client.api.getChat(null, {
-            params: { chat_id },
-            lean: true
-        })
-        return message.ok ?this._add(message.result, true, { id: message.result.id, extras: [false] }) : false
+        let response = await this.client.rest.get(Routes.GetChat, { chat_id }, { data: true })
+        return response.ok ? this._add(response.result, true, { id: response.result.id, extras: [false] }): false
     }
 
 }

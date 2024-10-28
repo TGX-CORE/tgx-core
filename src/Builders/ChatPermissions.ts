@@ -1,3 +1,4 @@
+import { ErrorCodes, TGXError } from '../Error'
 import { Builder } from './Builder'
 
 /**
@@ -21,6 +22,24 @@ export enum AdministratorRight {
     ManageTopics = 'can_manage_topics'
 }
 
+const rights = [
+    'is_anonymous',
+    'can_manage_chat',
+    'can_delete_messages',
+    'can_manage_video_chats',
+    'can_restrict_members',
+    'can_promote_members',
+    'can_change_info',
+    'can_invite_users',
+    'can_post_stories',
+    'can_edit_stories',
+    'can_delete_stories',
+    'can_post_messages',
+    'can_edit_messages',
+    'can_pin_messages',
+    'can_manage_topics'
+]
+
 /**
  * Describes actions that a non-administrator user is allowed to take in a chat.
  */
@@ -41,28 +60,81 @@ export enum Permission {
     ManageTopics = "can_manage_topics"
 }
 
+const permissions = [
+    'can_send_messages',
+    'can_send_audios',
+    'can_send_documents',
+    'can_send_photos',
+    'can_send_videos',
+    'can_send_video_notes',
+    'can_send_voice_notes',
+    'can_send_polls',
+    'can_send_other_messages',
+    'can_add_web_page_previews',
+    'can_change_info',
+    'can_invite_users',
+    'can_pin_messages',
+    'can_manage_topics'
+]
+
 export class ChatAdministratorRights extends Builder {
 
-    public declare value: AdministratorRight[]
+    public declare value: {
+        [key in AdministratorRight]: boolean
+    }
 
     /**
      * @param rights The required administrator rights of the user in the chat.
      */
     public constructor(...rights: AdministratorRight[]){
-        super({ value: rights, parseVal: true })
+        super({ value: { }, parseVal: true })
+
+        for(let value of rights){
+            this.set(value)
+        }
+    }
+
+    /**
+     * Set a right.
+     * 
+     * @param right The right to set.
+     * @param allowed Wether to set to true to allow permission or not.
+     */
+    public set(right: AdministratorRight, allowed: boolean = true){
+        if(!rights.includes(right)) throw new TGXError(ErrorCodes.InvalidAdminstratorRight, right)
+        this.value[right] = allowed
+        return this
     }
 
 }
 
 export class ChatPermissions extends Builder {
 
-    public declare value: Permissions[]
+    public declare value: {
+        [key in Permission]: boolean
+    }
 
     /**
      * @param permissions The permissions a non-adminstrator user is allowed.
      */
-    public constructor(...permissions: Permissions[]){
-        super({ value: permissions, parseVal: true })
+    public constructor(...permissions: Permission[]){
+        super({ value: { }, parseVal: true })
+
+        for(let value of permissions){
+            this.set(value)
+        }
+    }
+
+    /**
+     * Set a permission.
+     * 
+     * @param permission The permission to set.
+     * @param allowed Wether to set to true to allow permission or not.
+     */
+    public set(permission: Permission, allowed: boolean = true){
+        if(!permission.includes(permission)) throw new TGXError(ErrorCodes.InvalidChatPermission, permission)
+        this.value[permission] = allowed
+        return this
     }
     
 }

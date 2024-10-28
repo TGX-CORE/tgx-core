@@ -1,5 +1,5 @@
-import type { Client } from '../Client/Client'
 import type { File, PhotoSize } from '../Classes/File'
+import type { Rest } from '../Classes/Rest'
 
 export interface FilePacket {
     file_id?: string
@@ -7,7 +7,8 @@ export interface FilePacket {
     file_size?: number
 
     file_path?: string
-    client?: Client
+    rest?: Rest
+    token?: string
 }
 
 export interface MediaFilePacket {
@@ -16,25 +17,25 @@ export interface MediaFilePacket {
     file_name?: string
 }
 
-export interface AnimationFilePacket extends FilePacket, MediaFilePacket, PhotoSizeFilePacket {
+export interface AnimationFilePacket extends Omit<FilePacket, 'token'|'rest'>, MediaFilePacket, PhotoSizeFilePacket {
     thumbnail?: PhotoSize
 }
 
-export interface AudioFilePacket extends FilePacket, MediaFilePacket {
+export interface AudioFilePacket extends Omit<FilePacket, 'token'|'rest'>, MediaFilePacket {
     performer?: string
     title?: string
 }
 
-export interface DocumentFilePacket extends FilePacket, Omit<MediaFilePacket,'duration'> {
+export interface DocumentFilePacket extends Omit<FilePacket, 'token'|'rest'>, Omit<MediaFilePacket,'duration'> {
     thumbnail?: PhotoSize
 }
 
-export interface PhotoSizeFilePacket extends FilePacket {
+export interface PhotoSizeFilePacket extends Omit<FilePacket, 'token'|'rest'> {
     width?: number
     height?: number
 }
 
-export interface StickerFilePacket extends FilePacket, PhotoSizeFilePacket {
+export interface StickerFilePacket extends Omit<FilePacket, 'token'|'rest'>, PhotoSizeFilePacket {
     type?: 'regular'|'maks'|'custom_emoji'
     thumbnail?: PhotoSizeFilePacket
     is_animated?: boolean
@@ -54,15 +55,15 @@ export interface MaskPosition {
     scale: number
 }
 
-export interface VideoFilePacket extends FilePacket, PhotoSizeFilePacket, MediaFilePacket {
+export interface VideoFilePacket extends Omit<FilePacket, 'token'|'rest'>, PhotoSizeFilePacket, MediaFilePacket {
 
 }
 
-export interface VideoNoteFilePacket extends FilePacket {
+export interface VideoNoteFilePacket extends Omit<FilePacket, 'token'|'rest'> {
     length?: number
     thumbnail?: PhotoSize
 }
 
-export interface VoiceFilePacket extends FilePacket, Omit<MediaFilePacket,'file_name'> {
+export interface VoiceFilePacket extends Omit<FilePacket, 'token'|'rest'>, Omit<MediaFilePacket,'file_name'> {
 
 }

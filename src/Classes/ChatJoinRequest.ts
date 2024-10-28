@@ -1,10 +1,10 @@
 import type { ChatRequestsManager } from '../Client/Managers/ChatRequestsManager'
 import type { Client } from '../Client/Client'
+import type { ChatPacket } from './BaseChat'
+import type { Chat } from '../Types/Message'
+import type { User } from './User'
 
 import { BaseClass } from './BaseClass'
-import { BaseChat } from './BaseChat'
-import { User } from './User'
-import { Chat } from '../Types/Message'
 
 export interface ChatInviteLink {
     invite_link: string
@@ -22,7 +22,7 @@ export interface ChatInviteLink {
 
 export interface ChatJoinRequestPacket {
     from: User
-    chat?: BaseChat
+    chat?: ChatPacket
     user_chat_id: number
     date: number
     bio: string
@@ -38,10 +38,16 @@ export class ChatJoinRequest extends BaseClass<ChatJoinRequest, ChatJoinRequestP
         super(client, packet)
     }
 
+    /**
+     * Approves the join request.
+     */
     public async approve(): Promise<boolean> {
         return this.manager.approve(this._from)
     }
 
+    /**
+     * Rejects the join request.
+     */
     public async decline(): Promise<boolean> {
         return this.manager.decline(this._from)
     }
@@ -54,7 +60,7 @@ export class ChatJoinRequest extends BaseClass<ChatJoinRequest, ChatJoinRequestP
         return this.client.chats.cache.get(this._chat)!
     }
 
-    public get user() {
+    public get user(): User {
         return this.client.users.cache.get(this._from)!
     }
 

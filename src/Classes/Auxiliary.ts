@@ -1,4 +1,4 @@
-import type { AuxiliariesRegistry } from '../Client/Registry/AuxilliaryRegistry'
+import type { AuxiliariesRegistry } from '../../dist/Registry/AuxilliaryRegistry'
 import type { Auxiliaries } from '../Types/Client'
 import type { PieceContext } from './Piece'
 

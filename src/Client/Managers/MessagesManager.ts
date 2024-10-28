@@ -17,6 +17,7 @@ import type { UserPacket } from '../../Classes/User'
 import { ChatBoostAdded } from '../../Types/Chatboost'
 import { CachedManager } from './CachedManager'
 import { Message } from '../../Classes/Message'
+import { Routes } from '../../Types/Routes'
 
 export interface ForwardPayload {
     chat_id: string|number
@@ -170,40 +171,32 @@ export class MessagesManager extends CachedManager<number, Message> {
      * Pins a message.
      */
     public async pin(message_id: number, disable_notification?: boolean, business_connection_id?: string): Promise<boolean> {
-        return this.client.api.pinChatMessage(null, {
-            params: { chat_id: this.chat.id, message_id, disable_notification, business_connection_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.PinChatMessage, { chat_id, message_id, disable_notification, business_connection_id }, { ok: true })
     }
 
     /**
      * Unpins a message.
      */
     public async unpin(message_id: number, business_connection_id: string): Promise<boolean> {
-        return this.client.api.unpinChatMessage(null, {
-            params: { chat_id: this.chat.id, message_id, business_connection_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.UnpinChatMessage, { chat_id, message_id, business_connection_id }, { ok: true })
     }
 
     /**
      * Unpin all pinned messages.
      */
     public async unpinAll(): Promise<boolean> {
-        return this.client.api.unpinAllChatMessages(null, {
-            params: { chat_id: this.chat.id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.UnpinAllChatMessages, { chat_id }, { ok: true })
     }
 
     /**
      * Delete or bulk delete messages.
      */
     public async delete(...message_ids: number[]): Promise<boolean> {
-        return this.client.api.deleteMessages(null, {
-            params: { chat_id: this.chat.id, message_ids: JSON.stringify(message_ids)},
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.DeleteMessages, { chat_id, message_ids: JSON.stringify(message_ids) }, { ok: true })
     }
 
     /**
@@ -212,12 +205,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param payload The payload data of the edit.
      */
     public async edit(payload: MessageEditPayload): Promise<Message|boolean> {
-        const result = await this.client.api.editMessageText(null, {
-            params: { chat_id: this.chat.id, ...payload, },
-            lean: true,
-            result: true
-        })
-        return typeof result ===  'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: chat_id } } = this
+        let response = await this.client.rest.post(Routes.EditMessageText, { chat_id, ...payload })
+        return typeof response ===  'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -227,12 +217,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param message_ids The ids of the messages to forward.
      */
     public async forward(payload: ForwardPayload, ...message_ids: Array<string|number>): Promise<number[]|boolean> {
-        const result =  this.client.api.forwardMessages(null, {
-            params: { ...payload, from_chat_id: this.chat.id, message_ids: JSON.stringify(message_ids) },
-            lean: true,
-            result: true
-        })
-        return typeof result ===  'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: from_chat_id } } = this
+        let response = await this.client.rest.post(Routes.ForwardMessages, { ...payload, from_chat_id, message_ids: JSON.stringify(message_ids) })
+        return typeof response ===  'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -242,12 +229,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param message_ids The ids of the messages to forward.
      */
     public async copy(payload: CopyMessagePayload, ...message_ids: number[]): Promise<boolean> {
-        const result = this.client.api.copyMessages(null, {
-            params: { ...payload, from_chat_id: this.chat.id, message_ids: JSON.stringify(message_ids)},
-            lean: true,
-            result: true
-        })
-        return typeof result ===  'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: from_chat_id } } = this
+        let response = await this.client.rest.post(Routes.CopyMessages, { ...payload, from_chat_id, message_ids: JSON.stringify(message_ids) })
+        return typeof response ===  'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -256,12 +240,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param payload the payload data of the caption.
      */
     public async editCaption(payload: MessagecaptionEditPayload): Promise<Message|boolean> {
-        const result = await this.client.api.editMessageCaption(null, {
-            params: { chat_id: this.chat.id, ...payload },
-            lean: true,
-            result: true
-        })
-        return typeof result === 'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: chat_id } } = this
+        let response = await this.client.rest.post(Routes.EditMessageCaption, { ...payload, chat_id })
+        return typeof response === 'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -270,12 +251,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param payload The payload data of the media.
      */
     public async editMedia(payload: MessageMediaEditPayload): Promise<Message|boolean> {
-        const result = await this.client.api.editMessageMedia(null, {
-            params: { chat_id: this.chat.id, ...payload },
-            lean: true,
-            result: true
-        })
-        return typeof result === 'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: chat_id } } = this
+        let response = await this.client.rest.post(Routes.EditMessageMedia, { ...payload, chat_id })
+        return typeof response === 'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -284,12 +262,9 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param payload The payload data of the reply markup.
      */
     public async editReplyMarkup(payload: MessageReplyMarkupEditPayload): Promise<Message|boolean> {
-        const result = await this.client.api.editMessageReplyMarkup(null, {
-            params: { chat_id: this.chat.id, ...payload },
-            lean: true,
-            result: true
-        })
-        return typeof result === 'boolean' ? result : this.client.actions.message.handle(result)
+        let { chat: { id: chat_id } } = this
+        let response = await this.client.rest.post(Routes.EditMessageReplyMarkup, { ...payload, chat_id })
+        return typeof response === 'boolean' ? response : this.client.actions.message.handle(response)
     }
 
     /**
@@ -298,10 +273,8 @@ export class MessagesManager extends CachedManager<number, Message> {
      * @param payload The payload data of the reaction.
      */
     public async setReaction(payload: MessageReactionPayload): Promise<boolean> {
-        return this.client.api.setMessageReaction(null, {
-            params: { ...payload, chat_id: this.chat.id, },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.SetMessageReaction, { ...payload, chat_id }, { ok: true })
     }
 
 }

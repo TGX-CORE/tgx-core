@@ -3,6 +3,7 @@ import type { Client } from '../Client/Client'
 import type { User, UserPacket } from './User'
 
 import { BaseClass } from './BaseClass'
+import { Routes } from '../Types/Routes'
 
 export interface PreCheckoutQueryPacket {
     id: string
@@ -30,18 +31,14 @@ export class PreCheckoutQuery extends BaseClass<PreCheckoutQuery, PreCheckoutQue
         super(client, packet)
     }
 
-    public async notOk(error_message: string): Promise<boolean> {
-        return this.client.api.answerPreCheckoutQuery(null, {
-            params: { pre_checkout_query_id: this.id, ok: false, error_message },
-            returnOk: true
-        })
+    public async ok(): Promise<boolean> {
+        let { id: pre_checkout_query_id } = this
+        return this.client.rest.post(Routes.AnswerPreCheckoutQuery, { pre_checkout_query_id, ok: true }, { ok: true })
     }
 
-    public async ok(): Promise<boolean> {
-        return this.client.api.answerPreCheckoutQuery(null, {
-            params: { pre_checkout_query_id: this.id, ok: true },
-            returnOk: true
-        })
+    public async notOk(error_message: string): Promise<boolean> {
+        let { id: pre_checkout_query_id } = this
+        return this.client.rest.post(Routes.AnswerPreCheckoutQuery, { pre_checkout_query_id, error_message, ok: false }, { ok: true })
     }
 
     public get user(): User {

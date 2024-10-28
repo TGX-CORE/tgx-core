@@ -1,7 +1,7 @@
 import { createReadStream, type ReadStream } from 'fs'
 import { Builder } from './Builder'
-import { join } from 'path'
 
+import { File } from '../Classes/File'
 import FORMDATA from 'form-data'
 
 /**
@@ -17,8 +17,14 @@ import FORMDATA from 'form-data'
  */
 export type FormAppendData = [string, string, FORMDATA.AppendOptions|string|undefined]
 
+/**
+ * FormData as a builder for sending files.
+ */
 export class FormDataBuilder extends Builder {
 
+    /**
+     * @param append_datas An array of FormAppendData to append to the form.
+     */
     public constructor(...append_datas: FormAppendData[]){
         super({ value: new FORMDATA(), returnValue: true })
 
@@ -30,21 +36,24 @@ export class FormDataBuilder extends Builder {
     /**
      * Append a file to the form.
      * 
-     * @param name The name the file will be attached as.
-     * @param path Absolute path to the file or a readstream.
-     * @param options Additional options or the name of the file.
+     * @param file The class File with an attached file to append to the form..
      */
-    public append(name: string, path: string|ReadStream, options?: FORMDATA.AppendOptions|string) {
-        this.value.append(name, typeof path === 'string' ? createReadStream(path) : path, options)
-        return this
-    }
+    public append(file: File): this
 
     /**
-     * @hidden
+     * Append a file to the form with a name, path or a read stream, and append options.
+     * 
+     * @param name The name the file will be attached as.
+     * @param path Absolute path to the file or a ReadStream.
+     * @param options Additional options or the name of the file.
      */
-
-    public _append(...any: any){
-        this.value.append(...any)
+    public append(name: string, path: string|ReadStream, options?: FORMDATA.AppendOptions|string): this
+    public append(input: string|File, path?: string|ReadStream, options?: FORMDATA.AppendOptions|string): this {
+        if (input instanceof File) {
+            this.value.append(...input.form)
+        } else {
+            this.value.append(input, typeof path === 'string' ? createReadStream(path) : path, options);
+        } return this
     }
 
 }

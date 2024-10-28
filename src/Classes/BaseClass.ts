@@ -1,7 +1,6 @@
 import type { Client } from '../Client/Client'
 
 import { defaults as _defaults } from '../Internals/shared'
-import { Base } from './Base'
 
 export abstract class BaseClass<T, P> {
 
@@ -21,7 +20,7 @@ export abstract class BaseClass<T, P> {
    * @hidden
    */
   public _patch(data: P): this {
-    return this.defaults(data, this, true)
+    return this.defaults(data, this, false, true)
   }
 
   /**
@@ -43,17 +42,8 @@ export abstract class BaseClass<T, P> {
   /**
    * @hidden
    */
-  public get defaults(){
-    return (defaults: any, context: any = this, top_layer?: boolean) => {
-      return _defaults(defaults, context, top_layer)
-    }
-  }
-
-  /**
-   * @hidden
-   */
-  public get nest(){
-    return Base.nest
+  public defaults(defaults: any, context: any = this, top_layer?: boolean, force?: boolean){
+    return _defaults(defaults, context, top_layer, force)
   }
 
 }

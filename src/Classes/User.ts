@@ -3,6 +3,7 @@ import type { ChatBoost } from './ChatBoost'
 import { UserProfilePhotos } from '../Types/Common'
 import { Client } from '../Client/Client'
 import { ChatBase } from './ChatBase'
+import { Routes } from '../Types/Routes'
 
 export interface UserPacket {
     id: number
@@ -23,6 +24,7 @@ export class User extends ChatBase<User, UserPacket> implements UserPacket {
 
     public declare id: number
 
+    public language_code?: string
     public is_bot?: boolean
 
     constructor(client: Client, packet: UserPacket){
@@ -30,17 +32,13 @@ export class User extends ChatBase<User, UserPacket> implements UserPacket {
     }
 
     public async boosts(chat_id: number): Promise<Array<ChatBoost>|boolean> {
-        return this.client.api.getUserChatBoosts(null, {
-            params: { chat_id },
-            lean: true, result: true
-        })
+        let { id: user_id } = this
+        return this.client.rest.get(Routes.GetUserChatBoosts, { chat_id, user_id })
     }
 
     public async getProfilePhotos(offset?: number, limit?: number): Promise<UserProfilePhotos> {
-        return this.client.api.getUserProfilePhotos(null, {
-            params: { user_id: this.id, offset, limit },
-            lean: true, result: true
-        })
+        let { id: user_id } = this
+        return this.client.rest.get(Routes.GetUserProfilePhotos, { user_id, offset, limit })
     }
 
 }

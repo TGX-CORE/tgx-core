@@ -56,7 +56,7 @@ class Message extends Event {
                 photo: new File(join(__dirname, '../media/field_residences.png'))
             }
         )
-
+        
         console.log(await reply.photo[1].download('./test/media/test.jpg'))
         
         // const reply = await message.reply(MessagePayloadMethod.Text, {

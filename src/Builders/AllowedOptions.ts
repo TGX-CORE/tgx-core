@@ -1,4 +1,4 @@
-import { AllowedUpdates } from '../Client/Managers/PollManager'
+import { AllowedUpdates } from '../Types/EndpointManager'
 import { Builder } from './Builder'
 
 export class AllowedUpdatesOptions extends Builder {

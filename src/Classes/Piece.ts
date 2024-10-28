@@ -1,4 +1,4 @@
-import { Registry } from '../Client/Registry/Registry'
+import { Registry } from '../../dist/Registry/Registry'
 import type { Client } from '../Client/Client'
 
 export interface PieceContext {
@@ -9,34 +9,28 @@ export interface PieceContext {
 }
 
 export interface PieceMeta {
-    name: string
+    name?: string
     enabled?: boolean
 }
 
-export class Piece<Meta extends PieceMeta> {
+export abstract class Piece<Meta extends PieceMeta> {
 
-    public name: string
-
-    public enabled: boolean
+    public name?: string
 
     public registry: InstanceType<typeof Registry>
 
     public readonly client: Client
 
     public constructor(context_piece: PieceContext, context_metadata: Meta){
-        
         this.name = context_metadata.name
-
-        this.enabled = context_metadata.enabled ?? true
-
         this.registry = context_piece.registry
-
         this.client = context_piece.registry.client
-
     }
 
     public onLoad() {
         return undefined
     }
+
+    public abstract get enabled(): boolean;
 
 }

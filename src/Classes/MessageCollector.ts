@@ -1,6 +1,6 @@
 import type { Message } from './Message'
 
-import { Collector, CollectorEvent, CollectorOptions, type CollectorFilter } from './Collector'
+import { Collector, CollectorEvent, CollectorOptions } from './Collector'
 import { ClientEvent } from '../Types/ClientEvent' 
 import { Chat } from '../Types/Message'
 

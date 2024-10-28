@@ -1,4 +1,4 @@
-import type { EventsRegistry } from '../Client/Registry/EventsRegistry'
+import type { EventsRegistry } from '../../dist/Registry/EventsRegistry'
 import type { ClientEvent } from '../Types/ClientEvent'
 import type { PieceContext } from './Piece'
 
@@ -6,9 +6,9 @@ import { Piece } from './Piece'
 
 export interface EventMeta {
     name: ClientEvent
+    event: ClientEvent
     once?: boolean
     emitter?: any
-    event?: string
 }
 
 /**
@@ -25,30 +25,33 @@ export abstract class Event extends Piece<EventMeta> {
     public event: string
 
     public declare registry: EventsRegistry
+    
+    private _enabled: boolean = true
 
     private utilizer: ((...args: any[]) => void) | null
 
     public constructor(context_piece: PieceContext, context_metadata: EventMeta){
+        context_metadata.name = context_metadata.event ?? context_metadata.name
         super(context_piece, context_metadata)
+        
         this.event = context_metadata.event ?? this.name
         this.once = context_metadata.once ?? false
-        
         this.emitter = context_metadata.emitter ?? this.client
 
         this.utilizer = this.emitter && this.event ? (this.once ? this._runOnce.bind(this) : this._run.bind(this)) : null
-        if(!this.emitter && !this.utilizer) this.enabled = false
     }
 
     /**
      * Activates or resumes the listener, this is activated on load.
      */
     public listen(){
-        if(this.utilizer){
-            const maxListeners = this.emitter.getMaxListeners()
-			if (maxListeners !== 0) this.emitter.setMaxListeners(maxListeners + 1)
-
+        if(this.enabled){
 			this.emitter[this.once ? 'once' : 'on'](this.event, this.utilizer)
         }
+    }
+
+    public get enabled(): boolean {
+        return Boolean(this.emitter && this.utilizer && this._enabled)
     }
 
     /**
@@ -56,6 +59,24 @@ export abstract class Event extends Piece<EventMeta> {
      */
     public stop(){
         this.emitter.removeListener(this.event, this.utilizer)
+    }
+
+    /**
+     * Enables the piece.
+     * 
+     * @param resume Wether to resume the piece, must be enabled.
+     */
+    public enable(resume?: boolean){
+        this._enabled = true
+        if(resume) this.listen()
+    }
+
+    /**
+     * Stops and disables the piece.
+     */
+    public disable(){
+        this.stop()
+        this._enabled = false
     }
 
     /**

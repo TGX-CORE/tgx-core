@@ -2,6 +2,10 @@ import type { LoginUrl as LoginUrlPayload, SwitchInlineQueryChosenChat as Switch
 import type { ChatAdministratorRights } from '../Builders/ChatPermissions'
 import type { WebAppInfo, WebAppInfo as WebAppInfoPayload } from './InlineQuery'
 
+export interface CopyText {
+    text: string
+}
+
 /**
  * An inline keyboard button can be any of the keyboard buttons below.
  */
@@ -37,6 +41,7 @@ export interface KeyboardButtonPayload {
     url?: string
     login_url?: LoginUrlPayload
     web_app?: WebAppInfoPayload
+    copy_text?: CopyText
     callback_game?: string
     callback_data?: string
     switch_inline_query?: string
@@ -117,6 +122,14 @@ export namespace KeyboardButton {
      */
     export function LoginUrl(text: string, login_url: LoginUrlPayload): KeyboardButtonPayload {
         return { text, login_url }
+    }
+
+    /**
+     * @param text Label text on the button.
+     * @param copy_text Description of the button that copies the specified text to the clipboard.
+     */
+    export function CopyText(text: string, copy_text: CopyText) : KeyboardButtonPayload {
+        return { text, copy_text }
     }
 
     /**

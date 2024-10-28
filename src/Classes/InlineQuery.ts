@@ -2,8 +2,9 @@ import type { InlineQueryResults, InlineQueryResultButtonType } from '../Builder
 import type { LocationPacket } from '../Types/Common'
 import type { Client } from '../Client/Client'
 
-import { User } from './User'
+import { Routes } from '../Types/Routes'
 import { BaseClass } from './BaseClass'
+import { User } from './User'
 
 export interface InlineQueryPacket {
     id: string
@@ -43,10 +44,8 @@ export class InlineQuery extends BaseClass<InlineQuery, InlineQueryPacket> imple
      * @param cache_time The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300. 
      */
     public async answer(results: InlineQueryResults, button?: InlineQueryResultButtonType, next_offset?: string, is_personal?: boolean, cache_time?: number): Promise<boolean> {
-        return this.client.api.answerInlineQuery(null, {
-            params: { inline_query_id: this.id, results, button, next_offset, is_personal, cache_time },
-            returnOk: true
-        })
+        let { id: inline_query_id } = this
+        return this.client.rest.post(Routes.AnswerInlineQuery, { inline_query_id, results, button, next_offset, is_personal, cache_time }, { ok: true })
     }
 
     public get user(): User {

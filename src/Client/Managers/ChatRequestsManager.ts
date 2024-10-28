@@ -1,6 +1,7 @@
 import { ChatJoinRequest } from '../../Classes/ChatJoinRequest'
 import { BaseGroupChat } from '../../Classes/BaseGroupChat'
 import { CachedManager } from './CachedManager'
+import { Routes } from '../../Types/Routes'
 
 export class ChatRequestsManager extends CachedManager<string, ChatJoinRequest> {
 
@@ -12,17 +13,13 @@ export class ChatRequestsManager extends CachedManager<string, ChatJoinRequest> 
     }
 
     public async approve(user_id: number): Promise<boolean> {
-        return this.client.api.approveChatJoinRequest(null, {
-            params: { chat_id: this.chat.id, user_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.ApproveChatJoinRequest, { chat_id, user_id }, { ok: true })
     }
 
     public async decline(user_id: number): Promise<boolean> {
-        return this.client.api.declineChatJoinRequest(null, {
-            params: { chat_id: this.chat.id, user_id },
-            returnOk: true
-        })
+        let { chat: { id: chat_id } } = this
+        return this.client.rest.post(Routes.DeclineChatJoinRequest, { chat_id, user_id }, { ok: true })
     }
 
 }

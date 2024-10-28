@@ -4,8 +4,10 @@ import type { MessageEntityPayload } from '../Types/MessageEntity'
 import type { PollOption } from '../Builders/PollOptions'
 import type { Client } from '../Client/Client'
 
+import { Routes } from '../Types/Routes'
 import { BaseClass } from './BaseClass'
 import { BaseChat } from './BaseChat'
+
 import { has } from '../Internals/shared'
 
 export interface PollPacket {
@@ -92,11 +94,8 @@ export class Poll extends BaseClass<Poll, PollPacket> implements Partial<PollPac
     }
 
     public async stop(reply_markup?: InlineKeyboardMarkup): Promise<boolean> {
-        const { _message, _chat, business_connection_id } = this
-        return this.client.api.stopPoll(null, {
-            params: { message_id: _message, chat_id: _chat, business_connection_id, reply_markup},
-            returnOk: true
-        })
+        const { _message: message_id, _chat: chat_id, business_connection_id } = this
+        return this.client.rest.post(Routes.StopPoll, { message_id, chat_id, business_connection_id, reply_markup }, { ok: true })
     }
 
     public get chat(): InstanceType<typeof BaseChat>|undefined {

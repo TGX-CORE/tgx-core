@@ -1,7 +1,7 @@
 import type { InputFile, LocationPayload, ReactionType } from '../Types/Message'
 import type { ChatPermissions } from '../Builders/ChatPermissions'
 import type { ChatPhoto, ChatPacket } from './BaseChat'
-import { ChatMemberPacket } from '../Types/Member'
+import type { ChatMemberPacket } from '../Types/Member'
 import type { Client } from '../Client/Client'
 import type { Message } from './Message'
 import type { Member } from './Member'
@@ -9,6 +9,7 @@ import type { Member } from './Member'
 import { ChatInviteLinksManager } from '../Client/Managers/ChatInviteLinksManager'
 import { ChatRequestsManager } from '../Client/Managers/ChatRequestsManager'
 import { MembersManager } from '../Client/Managers/MembersManager'
+import { Routes } from '../Types/Routes'
 import { BaseChat } from './BaseChat'
 
 export interface ChatLocation {
@@ -70,33 +71,66 @@ export abstract class BaseGroupChat extends BaseChat implements BaseGroupChatPac
         this.requests = new ChatRequestsManager(this)
     }
 
-    public async setPhoto(photo: InputFile, form?: FormData): Promise<boolean> {
-        return this.client.api.setChatPhoto(form, {
-            params: { photo },
-            headers: { 'Content-Type': form ? 'multipart/form-data' : 'application/json' },
-            returnOk: true
-        })
+    /**
+     * Set the current photo of the chat.
+     * 
+     * @param photo 
+     */
+    public async setPhoto(photo: InputFile): Promise<boolean> {
+        return this.client.rest.post(Routes.SetChatPhoto, { chat_id: this.id, photo }, { ok: true })
     }
 
+    /**
+     * Delete the current photo of the chat.
+     */
     public async deletePhoto(): Promise<boolean> {
-        return this.client.api.deleteChatPhoto(null, {
-            params: { chat_id: this.id },
-            returnOk: true
-        })
+        return this.client.rest.post(Routes.DeleteChatPhoto, { chat_id: this.id }, { ok: true })
     }
 
+    /**
+     * Get the administrators of the chat.
+     */
     public async administrators(): Promise<Array<Member>> {
-        const result = await this.client.api.getChatAdministrators(null, {
-            params: { chat_id: this.id },
-            lean: true,
-            result: true
-        })
-
-        if(result){
+        let result
+        if(result = await this.client.rest.post(Routes.GetChatAdministrators, { chat_id: this.id })){
             return result.map((packet: ChatMemberPacket) => {
                 return this.members._add(packet, true)
             })
         } else return result
+    }
+
+    /**
+     * Set the title of the current chat.
+     * 
+     * @param title The new title of the chat.
+     */
+    public async setTitle(title: string): Promise<boolean> {
+        return this.client.rest.post(Routes.SetChatTitle, { chat_id: this.id, title }, { ok: true })
+    }
+
+    /**
+     * Set the description of the current chat.
+     * 
+     * @param description The new description of the chat.
+     */
+    public async setDescription(description: string): Promise<boolean> {
+        return this.client.rest.post(Routes.SetChatDescription, { chat_id: this.id, description }, { ok: true })
+    }
+
+    /**
+     * Set the sticker set of the current chat.
+     * 
+     * @param sticker_set_name The name of the set of stickers.
+     */
+    public async setStickerSet(sticker_set_name: string): Promise<boolean> {
+        return this.client.rest.post(Routes.SetChatStickerSet, { chat_id: this.id, sticker_set_name }, { ok: true })
+    }
+
+    /**
+     * Deletes the current set of sticker from the current chat.
+     */
+    public async deleteStickerSet(): Promise<boolean> {
+        return this.client.rest.post(Routes.DeleteChatStickerSet, { chat_id: this.id }, { ok: true })
     }
 
 }

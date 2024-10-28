@@ -1,6 +1,7 @@
 export interface BotCommand {
     command: string
     description: string
+    ignore?: Boolean
 }
 
 export interface CommandScope {

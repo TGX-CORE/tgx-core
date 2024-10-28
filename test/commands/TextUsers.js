@@ -5,7 +5,7 @@ class TestMembers extends Command {
     constructor(context, metadata){
         super(context, {
             ...metadata,
-            name: 'testusers',
+            command: 'testusers',
             description: 'This is a text command!',
             scope: CommandScopeType.ChatMember,
             chat_groups: {

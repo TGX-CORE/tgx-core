@@ -1,11 +1,9 @@
-import type { AbstractCtor } from '@sapphire/utilities'
-
-import { classExtends, isClass } from '../../Internals/shared'
+import { AbstractConstructor, classExtends, isClass } from '../../Internals/shared'
 import { Piece } from '../../Classes/Piece'
 import { basename, extname } from 'path'
 import { Registry } from './Registry'
 
-export class Strategy<T extends Piece<any>> {
+export class Strategy<K, T extends Piece<any>> {
 
     //'.cjs', '.mjs'
     public supportedExtensions = ['.js']
@@ -21,7 +19,7 @@ export class Strategy<T extends Piece<any>> {
     public filter(path: string): any {
         const extension = extname(path)
         if(!this.supportedExtensions.includes(extension)) return null
-        if (this.filterDtsFiles && path.endsWith('.d.ts')) return null
+        if(this.filterDtsFiles && path.endsWith('.d.ts')) return null
         const name = basename(path)
         if (name === '' || name.startsWith('.')) return null
         return { extension, path, name }
@@ -35,7 +33,7 @@ export class Strategy<T extends Piece<any>> {
         return module
     }
 
-    public async *load(registry: Registry<T>, file: any): AsyncIterableIterator<any> {
+    public async *load(registry: Registry<K, T>, file: any): AsyncIterableIterator<any> {
         let module = await this.preload(file),
             yielded = false
         if(isClass(module) && classExtends(module, registry.Constructor)){
@@ -43,7 +41,7 @@ export class Strategy<T extends Piece<any>> {
             yielded = true
         }
         for(const exported of Object.values(module)){
-            if(isClass(exported) && classExtends(exported as AbstractCtor, registry.Constructor)){
+            if(isClass(exported) && classExtends(exported as AbstractConstructor, registry.Constructor)){
                 yield exported
                 yielded = true
             }

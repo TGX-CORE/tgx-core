@@ -4,6 +4,10 @@ import type { Message } from '../../Classes/Message'
 import type { Client } from '../Client'
 
 import { CachedManager } from './CachedManager'
+import { Routes } from '../../Types/Routes'
+
+import { ErrorCodes } from '../../Error/Codes'
+import { TGXError } from '../../Error'
 
 export class InvoicesManager extends CachedManager<string, Invoice> {
 
@@ -26,16 +30,18 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
     }
 
     /**
-     * Returns an invoice link or an invoice with complete details such as payment_provider, but excluding chat ids.
+     * Returns an invoice link, invoice or false if the invoice is not found. 
      * 
      * @param id The id of the invoice.
      */
-    public generate(id: string): Boolean|String|Partial<SendInvoicePayload> {
+    public generate(id: string): false|String|Partial<Invoice> {
+        if(!this.provider_token) throw new TGXError(ErrorCodes.MissingPaymentProvider)
+
         const stored = this.cache.get(id)
         return stored ?
             typeof stored === 'string' ?
                 stored
-            :   stored.setProviderToken(this.provider_token!) as unknown as SendInvoicePayload
+            :   stored.setProviderToken(this.provider_token)
         : false
     }
 
@@ -46,6 +52,8 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
      * @param invoice The payload of the invoice.
      */
     public create(id: string, invoice: Invoice){
+        if(!this.provider_token) throw new TGXError(ErrorCodes.MissingPaymentProvider)
+            
         return this._add(
             invoice
                 .setPayload(invoice.payload ?? id)
@@ -59,17 +67,11 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
      * @param payload The payload of the invoice link.
      */
     public async createLink(id: string, payload: CreateInvoiceLinkPayload): Promise<string|boolean> {
-        const result = this.client.api.createInvoiceLink(null, {
-            params: {
-                ...payload,
-                provider_token: this.provider_token
-            },
-            lean: true,
-            result: true
-        })
+        if(!this.provider_token) throw new TGXError(ErrorCodes.MissingPaymentProvider)
 
-        if( result ) this.cache.set(id, result)
-        return result
+        let { provider_token } = this, response
+        if(response = await this.client.rest.post(Routes.CreateInvoiceLink, { ...payload, provider_token })) this.cache.set(id, response)
+        return response
     }
     
     /**
@@ -78,19 +80,15 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
      * @param id The id of the invoice.
      * @param chat_id The target chat to send the invoice to.
      */
-    public async send(id: string, chat_id: number): Promise<Message|void> {
-        const invoice = this.generate(id)
+    public async send(id: string, chat_id: number): Promise<Message|null> {
+        let invoice
 
-        if( !invoice ) return this.client.logger.error('[InvoicesManager - send(' + id + ')] You don\'t have an invoice  stored.')
-        if( typeof invoice === 'string' ) return this.client.logger.error('[InvoicesManager - send(' + id + ')] You can only send an invoice and not an invoice link!')
-        
-        const result = await this.client.api.sendInvoice(null, {
-            params: { ...invoice, chat_id },
-            lean: true,
-            result: true
-        })
+        if(!this.provider_token) throw new TGXError(ErrorCodes.MissingPaymentProvider)
+        if(!(invoice = this.generate(id))) throw new TGXError(ErrorCodes.InvalidInvoice, id)
+        if(typeof invoice === 'string') throw new TGXError(ErrorCodes.AnInvoiceLink, id) 
 
-        return result ? this.client.actions.message.handle(result, false) : null
+        let response = await this.client.rest.post(Routes.SendInvoice, { ...invoice, chat_id })
+        return response ? this.client.actions.message.handle(response, false) : null
     }
 
 }

@@ -3,6 +3,7 @@ import type { ChatPacket } from './BaseChat'
 
 import { TopicsManager } from '../Client/Managers/TopicsManager'
 import { BaseGroupChat } from './BaseGroupChat'
+import { Routes } from '../Types/Routes'
 
 export class SuperGroupChat extends BaseGroupChat {
 
@@ -15,10 +16,8 @@ export class SuperGroupChat extends BaseGroupChat {
     }
 
     public async setAdministratorCustomTitle(user_id: number, custom_title: string): Promise<boolean> {
-        return this.client.api.setChatAdministratorCustomTitle(null, {
-            params: { chat_id: this.id, user_id, custom_title },
-            returnOk: true
-        })
+        let { id: chat_id } = this
+        return this.client.rest.post(Routes.SetChatAdministratorCustomTitle, { chat_id, user_id, custom_title }, { ok: true })
     }
 
 }

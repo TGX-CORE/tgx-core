@@ -42,7 +42,8 @@ export class Invoice extends Builder implements StoredInvoice {
      * @hidden
      */
     public _patch(data: StoredInvoice): this {
-        return defaults(data, this.value, true)
+        defaults(data, this.value, true)
+        return this
     }
 
     /**

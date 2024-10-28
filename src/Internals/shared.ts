@@ -1,10 +1,25 @@
-import type { AbstractCtor } from '@sapphire/utilities'
+export type AbstractConstructor<T = any> = abstract new (...args: any[]) => T;
+
+/**
+ * Here is an enumeration for which key are read for the coresponding variables.
+ * 
+ * @property Token Your Telegram bot token.
+ * @property ProviderToken Your Telegram payment provider token.
+ * @property APIID Your Telegram app api id.
+ * @property APIHash Your Telegram app api hash.
+ */
+export enum EnvironmentVariables {
+	Token = 'TELEGRAM_TOKEN',
+	ProviderToken = 'TELEGRAM_PAYMENT_PROVIDER_TOKEN',
+	Api = 'TELEGRAM_API_ID',
+	Hash = 'TELEGRAM_API_HASH'
+}
 
 /**
  * Checks whether the array has the matched value or passes the function.
  * 
  * @param array The array that contains the value.
- * @param value The value to check or the validator.
+ * @param value The value to check or pass a function.
  */
 export function has(array: any[] = [], value: any|((value: any) => any)): boolean {
 	return typeof value === 'function' ?
@@ -31,11 +46,11 @@ export function isJson(value: unknown): boolean {
 	return typeof value === 'object' && !Array.isArray(value) && !isClass(value)
 }
 
-export function classExtends<T extends AbstractCtor>(value: AbstractCtor, base: T): value is T {
-	let ctor: AbstractCtor | null = value
-	while (ctor !== null) {
-		if (ctor === base) return true
-		ctor = Object.getPrototypeOf(ctor)
+export function classExtends<T extends AbstractConstructor>(value: unknown, base: T): value is T {
+	let constructor = value as Function|null
+	while(constructor){
+		if(constructor === base) return true
+		constructor = Object.getPrototypeOf(constructor)
 	}
 	return false
 }
@@ -48,8 +63,8 @@ export function classExtends<T extends AbstractCtor>(value: AbstractCtor, base: 
  * @param topLayer Pass true to ignore nested objects.
  * @returns context
  */
-export function defaults(_defaults: any, context: any = { }, topLayer?: boolean){
-	for(let [key, value] of Object.entries(_defaults)){
+export function defaults<T = any>(_defaults: T, context: any = { }, topLayer?: boolean, force?: boolean): T {
+	for(let [key, value] of Object.entries(_defaults as any)){
 		const descriptor = Object.getOwnPropertyDescriptor(context, key)
 
 		if(descriptor && (typeof descriptor.get === 'function' || !descriptor.configurable || !descriptor.writable)) continue
@@ -59,7 +74,7 @@ export function defaults(_defaults: any, context: any = { }, topLayer?: boolean)
 			if(typeof value === 'object' && isJson(value) && !topLayer){
 				context[key] = defaults(value, context[key])
 			} else {
-				if(typeof value !== typeof context[key]){
+				if(typeof value !== typeof context[key]||force){
 					context[key] = value
 				}
 			}
@@ -98,7 +113,7 @@ export type NestCallback = (param1: any, param2: any, param3?: any) => any
  * @param additional Additional options on how to read the object.
  * @param fn The callback function to call whenever a key and value has been read. Additional information is available.
  */
-export function nest(object: any = { }, additional: Nesting, fn: NestCallback): any {
+export function nest<T = any>(object: any = { }, additional: Nesting, fn: NestCallback): T {
 	let output: any = additional.merge ? object : { }, returned
 	for(let [key, value] of Object.entries(object)){
 		if(isJson(value)){

@@ -15,7 +15,7 @@ export class GenericCreator<H, P, E extends any[] = []> extends GenericAction {
         this.pointer = pointer
     }
 
-    public override handle(_packet: P, prepack?: boolean): any {
+    public override handle(_packet: P, prepack: boolean = true): any {
         let packet: any[]|any = prepack ? this.prepack(_packet) : _packet
 
         const constructed = new this.hold(this.client, Array.isArray(packet) ? packet[1] : packet)

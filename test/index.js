@@ -1,19 +1,27 @@
+const { Client, PartialTypes, Parseables, Endpoint, Extensions } = require('tgx-core')
 const { join } = require('path')
-const { AllowedUpdates, Client, PartialTypes, Parseables, AllowedUpdatesOptions, Registries, Endpoint, ClientEvent } = require('tgx-core')
 
 const client = new Client({
-    sweep: join(__dirname, './'),
-    registries: Registries.All,
-    webhook: {
-        url: 'https://bca5-175-176-51-55.ngrok-free.app',
-        port: 8080
-    },
-    poll: {
-        allowed_updates: new AllowedUpdatesOptions(AllowedUpdates.All),
-    },
     partials: [PartialTypes.Chat, PartialTypes.Member],
     parseables: [Parseables.MessageEntities],
-    endpoint: Endpoint.Webhook
+
+    endpoint: {
+        type: Endpoint.Webhook,
+        url: 'https://b9da-2001-4451-859-f800-d2a-be11-9e8e-bca7.ngrok-free.app',
+        port: 8080
+    },
+
+    extensions: {
+        load: [
+            [Extensions.Registries, {
+                root: join(__dirname, './'),
+                commands: { load: true },
+                events: { load: true },
+                auxiliaries: { load: true }
+            }]
+        ]
+    }
+
 })
 
 client.intialize()

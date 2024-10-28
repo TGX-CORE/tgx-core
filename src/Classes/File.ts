@@ -1,102 +1,148 @@
-import type  { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, FilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../Types/File'
-import type { Client } from '../Client/Client'
+import type { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, FilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../Types/File'
 import type { Stream } from 'node:stream'
 
+import { defaults, EnvironmentVariables } from '../Internals/shared'
+import { Rest } from './Rest'
+
 import { createReadStream, createWriteStream, type ReadStream } from 'node:fs'
-import { defaults } from '../Internals/shared'
-import { isAbsolute, normalize } from 'path'
-import { parse } from 'node:path'
+import { isAbsolute, normalize, parse } from 'node:path'
+import FormData from 'form-data'
 
 /**
+ * If there is no token set, it will get Token from your environment variables {@link EnvironmentVariables}.
+ * 
  * @property client The client will only be availble if the class is passed by tgx-core itself.
  */
-export class File implements FilePacket {
+export class File implements Omit<FilePacket, 'token'|'rest'> {
+
+    private _token?: string
+    private _rest: Rest
 
     public file_id?: string
     public file_path?: string
-    
-    public path?: string 
 
-    public readonly client?: Client
+    public path?: string 
+    public options?: FormData.AppendOptions
 
     /**
-     * Always check the path to be correct or it will be set as the id of the file.
-     * 
-     * @param packet The packet, the filel_id, or absolute path to the file to read.
+     * @param packet The packet metadata of the file.
      */
-    public constructor(packet?: FilePacket|string){
+    public constructor(packet: FilePacket)
+
+    /**
+     * @param file_id The id of the file.
+     */
+    public constructor(file_id: string)
+
+    /**
+     * @param path The absolute path to the file to attach.
+     * @param options Additional append options for uploading file, can be empty.
+     */
+    public constructor(path: string, options?: FormData.AppendOptions)
+    public constructor(packet: FilePacket|string, options?: FormData.AppendOptions){
         if(typeof packet === 'string'){
             if(isAbsolute(packet) || normalize(packet) === packet){
                 this.path = packet
+                this.options = options
             } else {
                 this.file_id = packet
             }
         } else {
-            defaults(packet, this)
+            if(packet.rest){
+                this._rest = packet.rest
+                delete packet.rest
+            }
 
-            Object.defineProperty(this, 'client', { value: packet!.client })
+            this.setToken(packet.token!)
+            delete packet.token
+
+            defaults(packet, this)
         }
+
+        this._rest ??= new Rest()
     }
 
     /**
-     * The id of the file or 'attach://<id>' of the reading file.
+     * Fetches the file, ensure that you have set the token or otherwise it will return the same instance.
+     */
+    public async fetch(): Promise<this> {
+        let response, { file_id, token } = this
+        if(token && file_id && (response = await this.rest.fetchFile(file_id, false))){
+            defaults(response, this, false, true)
+            return this
+        }
+        return this
+    }
+
+    /**
+     * Downloads the file, must have a token.
+     * 
+     * @param path The absolute path to a file where you want to write the data.
+     */
+    public async download(path?: string): Promise<Stream|boolean> {
+        let response, { token, file_path } = this
+
+        await this.fetch()
+        if(token && (response = await this.rest.request(`/${file_path}`, null, { file: true, responseType: 'stream', data: true }))){
+            if(!path) return response
+
+            let writer = createWriteStream(path)
+            response.pipe(writer)
+
+            return new Promise((resolve, reject) => {
+                writer.on('finish', () => resolve(true))
+                writer.on('error', () => reject(false))
+            })
+        }
+        return false
+    }
+
+    /**
+     * Returns an array that you can use to append to a FormData.
+     */
+    public get form(): [string, ReadStream, FormData.AppendOptions|string]{
+        const parsed = parse(this.path!)
+        return [parsed.name, createReadStream(this.path!), this.options ?? parsed.base]
+    }
+
+    /**
+     * Wether the file is fetched. The link is valid for 1 hour after fetching.
+     */
+    public get partial(){
+        return Boolean(this.file_path)
+    }
+
+    /**
+     * Returns the id of the file or the attach of the attached file.
      */
     public get id(){
         const parsed = parse(this.path!)
         return this.file_id ?? `attach://${parsed.name}`
     }
 
-    /**
-     * Returns a tuple value for form appending.
-     */
-    public get form(): [string, ReadStream, string] {
-        const parsed = parse(this.path!)
-        return [parsed.name, createReadStream(this.path!), parsed.base]
+    private get token(){
+        return this._token ?? process.env[EnvironmentVariables.Token]
+    }
+
+    private get rest(){
+        return this._rest.ready ? this._rest : this._rest.setToken(this.token!)
     }
 
     /**
-     * Fetch the file from Telegram, this is required for downloading the file.
+     * Returns the id of the file or the attach of the attached file.
      */
-    public async fetch(): Promise<this|boolean> {
-        if(!this.client) return false
-
-        let { file_id } = this
-        let data = await this.client.api.getFile(null, {
-            params: { file_id },
-            lean: true,
-            result: true
-        })
-
-        return data ? defaults(data, this) : data
+    public parse(){
+        return this.id
     }
 
     /**
-     * Fetches the file and downloads it.
+     * Sets the token for fetching and downloading.
      * 
-     * @param path Leave empty if you want a stream, or an absolute path to the file where you want to write the Stream.
+     * @param token The token to set, this is exclusive to this class.
      */
-    public async download(path: string): Promise<Stream|boolean> {
-        if(!await this.fetch()) return false
-        let response = await this.client?.api.request(`${this.client.api.options.files}/${this.client.api.token}/${this.file_path}`, 'get', {
-            responseType: 'stream'
-        })
-
-        if(response){
-            if(!path) return response.data
-
-            let writer = createWriteStream(path)
-            response.data.pipe(writer)
-
-            return new Promise((resolve) => {
-                writer.on('finish', () => { resolve(true) })
-                writer.on('error', (error) => {
-                    this.client?.logger.error(error)
-                    resolve(false)
-                })
-            })
-
-        } 
-        return false
+    public setToken(token: string){
+        this._token = token
+        return this
     }
 
 }

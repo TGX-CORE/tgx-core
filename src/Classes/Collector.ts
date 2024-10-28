@@ -1,8 +1,9 @@
 import type { Client } from '../Client/Client'
 
 import { Collection } from '@discordjs/collection'
-import EventEmitter from 'node:events'
 import { Message } from './Message'
+
+import EventEmitter from 'node:events'
 
 /**
  * The filter of a collector, this will decide wether to collect the data or not.
@@ -174,8 +175,8 @@ export abstract class Collector<O extends CollectorOptions, I, C> extends EventE
         }
     }
 
-    public abstract collect(collect: C): I|null;
+    public abstract collect(collect: C): I|null
 
-    public abstract dispose(dispose: C): I|null;
+    public abstract dispose(dispose: C): I|null
 
 }

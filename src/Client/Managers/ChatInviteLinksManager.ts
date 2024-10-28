@@ -5,6 +5,7 @@ import type { GroupChat } from '../../Classes/GroupChat'
 
 import { ChatInviteLink } from '../../Classes/ChatInviteLink'
 import { CachedManager } from './CachedManager'
+import { Routes } from '../../Types/Routes'
 
 export interface ChatInviteLinkCreatePayload {
     chat_id: string|number
@@ -42,40 +43,37 @@ export class ChatInviteLinksManager extends CachedManager<string, ChatInviteLink
     }
 
     public async export(): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('exportChatInviteLink', {})
+        const response = await this.generate(Routes.ExportChatInviteLink, {})
         return response ? this._add(response, true, { id: response.name, extras: [this] }) : false
     }
 
     public async create(payload: ChatInviteLinkCreatePayload): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('createChatInviteLink', payload)
+        const response = await this.generate(Routes.CreateChatInviteLink, payload)
         return response ? this._add(response, true, { id: response.name, extras: [this] }) : false
     }
 
     public async createSubscription(payload: ChatInviteLinkSubscriptionPayload): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('createChatSubscriptionInviteLink', payload)
+        const response = await this.generate(Routes.CreateChatSubscriptionInviteLink, payload)
         return response ? this._add(response, true, { id: Response.name, extras: [this] }) : false
     }
 
     public async edit(payload: ChatInviteLinkEditPayload): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('editChatInviteLink', payload)
+        const response = await this.generate(Routes.EditChatInviteLink, payload)
         return response ? this._add(response, true, { id: response.name, extras: [this] }) : false
     }
     public async editSubscription(payload: ChatInviteLinkSubscriptionEditPayload): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('createChatSubscriptionInviteLink', payload)
+        const response = await this.generate(Routes.EditChatSubscriptionInviteLink, payload)
         return response ? this._add(response, true, { id: Response.name, extras: [this] }) : false
     }
 
     public async revoke(invite_link: string): Promise<ChatInviteLink|boolean> {
-        const response = await this.generate('revokeChatInviteLink', { invite_link })
+        const response = await this.generate(Routes.RevokeChatInviteLink, { invite_link })
         return response ? this._add(response, true, { id: response.name, extras: [this] }) : false
     }
 
-    private generate(method: string, payload: any): any {
-        return this.client.api[method](null, {
-            params: { ...payload, chat_id: this.chat.id },
-            lean: true,
-            result: true
-        })
+    private generate(method: Routes, payload: any): any {
+        let { chat:{ id: chat_id } } = this
+        return this.client.rest.post(method, { ...payload, chat_id })
     }
 
 }

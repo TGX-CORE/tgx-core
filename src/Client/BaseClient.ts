@@ -1,4 +1,4 @@
-import { Endpoint, type ClientOptions } from '../Types/Client'
+import { type ClientOptions } from '../Types/Client'
 
 import { defaults } from '../Internals/shared'
 import { LogLevel } from './Managers/Logger'
@@ -13,12 +13,10 @@ export class BaseClient extends Base {
   
   public constructor(options: ClientOptions){
     super()
-
     this.options = defaults({
         logger: {
             level: LogLevel.Debug
-        },
-        endpoint: Endpoint.Poll
+        }
     }, options)
   }
   

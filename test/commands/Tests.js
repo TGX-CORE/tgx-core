@@ -6,7 +6,12 @@ class Test extends Command {
         super(context, {
             ...metadata,
             name: 'test',
-            description: 'This is a text command!'
+            language_code: {
+                'undefined': {
+                    command: 'test',
+                    description: 'This is a text command!'
+                }
+            }
         })
     }
 

@@ -11,8 +11,7 @@ class Ready extends Event {
     }
 
     async run(client) {
-
-        // console.log(client.me)
+        // console.log(client.user)
 
         // client.me.setName('TGX-CORE')
 

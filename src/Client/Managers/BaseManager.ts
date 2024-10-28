@@ -3,13 +3,13 @@ import type { Client } from '../Client'
 import { defaults as _defaults } from '../../Internals/shared'
 import { Base } from '../../Classes/Base'
 
-export abstract class BaseManager<OptionType = any> extends Base {
+export abstract class BaseManager<T = any> extends Base {
 
     public declare readonly client: Client
-    public declare readonly options: OptionType
-    public declare readonly default?: OptionType
+    public declare readonly options: T
+    public declare readonly default?: T
 
-    public constructor(client: Client, pointer?: string, defaults?: OptionType){
+    public constructor(client: Client, pointer?: string, defaults?: T){
         super()
 
         Object.defineProperty(this, 'client', { value: client })

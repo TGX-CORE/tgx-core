@@ -29,22 +29,40 @@ export class ForumTopic extends ChatBase<ForumTopic, SerializedForumTopicPacket>
         super(client, packet)
     }
 
+    /**
+     * Edit the current forum topic.
+     * 
+     * @param name The new name of the forum topic.
+     * @param icon_custom_emoji_id The id of the new custom emoji of the forum topic.
+     */
     public async edit(name?: string, icon_custom_emoji_id?: string): Promise<boolean> {
         return this.chat.topics.edit(this.id, name, icon_custom_emoji_id)
     }
 
+    /**
+     * Close the current forum topic.
+     */
     public close(): Promise<boolean> {
         return this.chat.topics.close(this.id)
     }
 
+    /**
+     * Reopen the current forum topic.
+     */
     public reopen(): Promise<boolean> {
         return this.chat.topics.reopen(this.id)
     }
 
+    /**
+     * Delete the current forum topic.
+     */
     public delete(): Promise<boolean> {
         return this.chat.topics.delete(this.id)
     }
 
+    /**
+     * Unpin all the messages of the current topic.
+     */
     public unpinAll(): Promise<boolean> {
         return this.chat.topics.unpinAll(this.id)
     }

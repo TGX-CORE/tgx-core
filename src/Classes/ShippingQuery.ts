@@ -4,6 +4,7 @@ import type { User, UserPacket } from './User'
 import type { Client } from '../Client/Client'
 
 import { BaseClass } from './BaseClass'
+import { Routes } from '../Types/Routes'
 
 export interface ShippingQueryPacket {
     id: string
@@ -25,17 +26,13 @@ export class ShippingQuery extends BaseClass<ShippingQuery, ShippingQueryPacket>
     }
 
     public async ok(shipping_options: ShippingOptions): Promise<boolean> {
-        return this.client.api.answerShippingQuery(null, {
-            params: { shipping_query_id: this.id, ok: true, shipping_options },
-            returnOk: true
-        })
+        let { id: shipping_query_id } = this
+        return this.client.rest.post(Routes.AnswerShippingQuery, { shipping_query_id, shipping_options, ok: true }, { ok: true })
     }
 
     public async notOk(error_message: string): Promise<boolean> {
-        return this.client.api.answerShippingQuery(null, {
-            params: { shipping_query_id: this.id, ok: false, error_message },
-            returnOk: true
-        })
+        let { id: shipping_query_id } = this
+        return this.client.rest.post(Routes.AnswerShippingQuery, { shipping_query_id, error_message, ok: false }, { ok: true })
     }
 
     public get user(): User {

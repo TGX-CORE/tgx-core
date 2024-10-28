@@ -17,28 +17,30 @@ import type { GroupChat } from '../Classes/GroupChat'
 import type { ChatPacket } from '../Classes/BaseChat'
 import type { PollPacket } from '../Classes/Poll'
 import type { UserPacket } from '../Classes/User'
+import type { Invoice } from '../Builders/Invoice' 
 import type { File } from '../Classes/File'
 
+import { Routes } from './Routes'
+
 export enum MessagePayloadMethod {
-    Action = 'sendChatAction',
-    Animation = 'sendAnimation',
-    Audio = 'sendAudio',
-    ChatAction = 'sendChatAction',
-    Contact = 'sendContact',
-    Document = 'sendDocument',
-    Dice = 'sendDice',
-    Invoice = 'sendInvoice',
-    Location = 'sendLocation',
-    MediaGroup = 'sendMediaGroup',
-    Text = 'sendMessage',
-    MessageReaction = 'sentMessageReaction',
-    PaidMedia = 'sendPaidMedia',
-    Photo = 'sendPhoto',
-    Poll = 'sendPoll',
-    Video = 'sendVideo',
-    Voice = 'sendVoice',
-    VideoNote = 'sendVideoNote',
-    Venue = 'sendVenue'
+    Action = Routes.SendChatAction,
+    Animation = Routes.SendAnimation,
+    Audio = Routes.SendAudio,
+    ChatAction = Routes.SendChatAction,
+    Contact = Routes.SendContact,
+    Document = Routes.SendDocument,
+    Dice = Routes.SendDice,
+    Invoice = Routes.SendInvoice,
+    Location = Routes.SendLocation,
+    MediaGroup = Routes.SendMediaGroup,
+    Text = Routes.SendMessage,
+    PaidMedia = Routes.SendPaidMedia,
+    Photo = Routes.SendPhoto,
+    Poll = Routes.SendPoll,
+    Video = Routes.SendVideo,
+    Voice = Routes.SendVoice,
+    VideoNote = Routes.SendVideoNote,
+    Venue = Routes.SendVenue
 }
 
 export enum ChatAction {
@@ -58,7 +60,7 @@ export enum ChatAction {
 /**
  * This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.
  * 
- * @reference Additional Information|Refer to this [guide](/guidebook/Working%20With%20Files/Sending%20a%20file) on how to upload files.
+ * @reference Additional Information|Refer to this [guide](/guidebook/Working%20With%20Files/Sending%20Files) on how to upload files.
  */
 export type InputFile = string|File
 
@@ -69,7 +71,7 @@ export type MessagePayload = TextPayload|PhotoPayload|AudioPayload|DocumentPaylo
                              AnimationPayload|VoicePayload|VideoNotePayload|PaidMediaPayload|
                              MediaGroupPayload|VenuePayload|LocationPayload|ContactPayload|PollPayload|
                              DicePayload|ChatActionPayload|CreateInvoiceLinkPayload|
-                             SendInvoicePayload
+                             SendInvoicePayload|Invoice
 
 export type AcceptedEmoji = "👍" | "👎" | "❤" | "🔥" | "🥰" | "👏" | "😁" | "🤔" | "🤯" | "😱" | "🤬" | "😢" | "🎉" |
 "🤩" | "🤮" | "💩" | "🙏" | "👌" | "🕊" | "🤡" | "🥱" | "🥴" | "😍" | "🐳" | "❤‍🔥" | "🌚" |
@@ -182,6 +184,7 @@ export interface OptionalBaseMessagePayload {
     disable_notification?: boolean
     parse_mode?: string
     reply_parameters?: ReplyParameters
+    allow_paid_broadcast?: boolean
     caption_entities?: MessageEntities|MessageEntityPayload[]
     reply_markup?: InlineKeyboardMarkup|ReplyKeyboardMarkup|ForceReply|ReplyKeyboardRemove
 }
@@ -194,6 +197,7 @@ export interface CopyMessagePayload {
     disable_notification?: boolean
     protect_content?: boolean
     remove_caption?: boolean
+    allow_paid_broadcast?: boolean
 }
 
 export interface BaseMessagePayload extends OptionalBaseMessagePayload {

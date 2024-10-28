@@ -1,75 +1,62 @@
-import type { Registry } from './Registry/Registry'
+import type { ClientOptions } from '../Types/Client'
+import type { File } from '../Classes/File'
 
-import { Endpoint, Registries, type ClientOptions } from '../Types/Client'
-import { AuxiliariesRegistry } from './Registry/AuxilliaryRegistry'
-import { CommandsRegistry } from './Registry/CommandsRegistry'
+import { ExtensionsManager } from './Managers/ExtensionsManager'
 import { CommandsManager } from './Managers/CommandsManager'
 import { InvoicesManager } from './Managers/InvoicesManager'
 import { PaymentsManager } from './Managers/PaymentsManager'
-import { RegistryManager } from './Managers/RegistryManager'
-import { ActionsManager } from './Managers/ActionsManager'
+import { EndpointManager } from './Managers/EndpointManager'
 import { WebhookManager } from './Managers/WebhookManager'
-import { EventsRegistry } from './Registry/EventsRegistry'
+import { ActionsManager } from './Managers/ActionsManager'
 import { PollsManager } from './Managers/PollsManager'
 import { ChatsManager } from './Managers/ChatsManager'
 import { UsersManager } from './Managers/UsersManager'
-import { PollManager, } from './Managers/PollManager'
 import { ClientEvent } from '../Types/ClientEvent'
-import { APIManager } from './Managers/ApiManager'
-import { MeManager } from './Managers/MeManager'
-import { Logger } from './Managers/Logger'
+import { ClientUser } from './ClientUser'
 import { BaseClient } from './BaseClient'
-import { join } from 'path'
+
+import { EnvironmentVariables } from '../Internals/shared'
+import { Logger } from './Managers/Logger'
+import { Rest } from '../Classes/Rest'
+
+import { ErrorCodes } from '../Error/Codes'
+import { TGXError } from '../Error'
 
 /**
  * The main hub for interacting with the Telegram API.
  * 
  * @information Client Events|The {@link ClientEvent:enum} contains the events that the client emits and what their parameters.
+ * 
+ * @property token The token provided by Telegram for your client.
+ * @property database An extension activated property.
  */
 export class Client extends BaseClient {
 
-  /**
-   * The token provided by Telegram for your client.
-   */
-  public readonly token?: string
-
   public logger: Logger
+  public user: ClientUser
   
   public actions: ActionsManager
-  
-  public api: APIManager
-
   public chats: ChatsManager
-
-  public registries: RegistryManager
-
   public users: UsersManager
-
   public polls: PollsManager
-  
   public invoices: InvoicesManager
-  
   public payments: PaymentsManager
-  
   public commands: CommandsManager
-  
-  public me: MeManager
-  
-  public poll: PollManager
+  public extensions: ExtensionsManager
+  public endpoint: EndpointManager
+  public webhook: WebhookManager
 
-  public webhook?: WebhookManager
+  public rest: Rest
+
+  public database?: any
 
   /**
-   * @param options - The options for your client.
+   * @param options The options for your client.
    */
   public constructor(options: ClientOptions){
     super(options)
 
     this.logger = new Logger(this.options.logger?.level)
-
-    this.api = new APIManager(this)
-
-    this.poll = new PollManager(this)
 
     this.actions = new ActionsManager(this)
 
@@ -85,62 +72,47 @@ export class Client extends BaseClient {
 
     this.commands = new CommandsManager(this)
 
-    this.me = new MeManager(this)
+    this.extensions = new ExtensionsManager(this)
 
-    this.registries = new RegistryManager()
-      .register(new AuxiliariesRegistry(this))
-      .register(new EventsRegistry(this))
-      .register(new CommandsRegistry(this))
+    this.endpoint = new EndpointManager(this)
+
+    this.webhook = new WebhookManager(this)
+
+    this.user = new ClientUser(this, { id: 0 })
+
+    this.rest = new Rest()
 
   }
 
   /**
-   *  Updates the me manager of the client.
+   * {@inheritDoc Rest.fetchFile}
    */
-  public async update(): Promise<void> {
-    await this.me.update()
-    return this.logger.debug(`Client has been updated, hello ${ this.me?.first_name }@${ this.me?.username }!`)
+  public async fetchFile(file_id: string, file?: boolean): Promise<File|false> {
+    return this.rest.fetchFile(file_id, file)
   }
 
   /**
    * Intializes your client and the poll manager, also updating the me manager.
    * 
-   * @param token - Your token for authorization, or stored in process.env as 'TELEGRAM_TOKEN'.
-   * @param provider_token - Your token provided by your payment provider, or stored in process.env as 'PAYMENT_PROVIDER_TOKEN'.
+   * @param token Your token for authorization, or see {@link EnvironmentVariables}.
+   * @param provider_token Your token provided by your payment provider, or see {@link EnvironmentVariables}.
    */
   public async intialize(
-    token: string = process.env['TELEGRAM_TOKEN'] as string,
-    provider_token: string = process.env['PAYMENT_PROVIDER_TOKEN'] as string
-  ): Promise<boolean> {
+    token: string = process.env[EnvironmentVariables.Token] as string,
+    provider_token: string = process.env[EnvironmentVariables.ProviderToken] as string
+  ): Promise<void> {
 
-    this.logger.debug(`Client is prepraring to start, token: ${ token?.split(':')[0] }:${ token?.split(':')[1]?.replace(/[a-zA-Z0-9]/g, 'X') } `)
-    
-    this.api.setToken(token)
+    if(!token) throw new TGXError(ErrorCodes.MissingToken)
+
+    this.logger.debug(`Client is preparing to start.`, `\n`, `${ token?.split(':')[0] }:${ token?.split(':')[1]?.replace(/[a-zA-Z0-9]/g, 'X') }`)
+    this.rest.setToken(token)
     this.invoices.setToken(provider_token)
-
-    if(this.options.sweep !== null){
-      this.registries.registerPath(typeof this.options.sweep == 'string' ? this.options.sweep : undefined)
-    }
-
-    this.registries.forEach(async (registry: Registry<any>) => {
-      if(this.options.registries == Registries.All || this.options.registries?.includes(registry.id!)){
-        await registry.loadAll()
-      }
-    })
     
-    await this.update()
-    switch(this.options.endpoint){
-      case Endpoint.Poll:
-        await this.poll.initialize()
-        break
-      case Endpoint.Webhook:
-        this.webhook = new WebhookManager(this)
-        await this.webhook.intialize()
-        break
-    }
-    
+    await this.user.get()
+    await this.extensions.initialize()
+    await this.endpoint.initialize()
+
     this.emit(ClientEvent.Ready, this)
-    return true
   }
   
 }
