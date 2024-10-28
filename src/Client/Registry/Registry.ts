@@ -3,17 +3,16 @@ import { Collection } from '@discordjs/collection'
 import { promises } from 'fs'
 import { join } from 'path'
 
+import { Registries } from '../../Types/Client'
 import { Piece } from '../../Classes/Piece'
 import { Strategy } from './Strategy'
 import { Client } from '../Client'
-import { Registries } from '../../Types/Client'
 
 export interface RegistryOptions {
     name: string
 }
 
 export class Registry<T extends Piece<any>> extends Collection<string, any> {
-
     
     public Constructor: AbstractConstructor<T>
     public strategy: Strategy<T> = new Strategy()
@@ -63,7 +62,7 @@ export class Registry<T extends Piece<any>> extends Collection<string, any> {
 
     public unload(name: string|T): T {
         const piece = this.resolve(name)
-        this.delete(piece.name)
+        this.delete(piece.name!)
         return piece
     }
 
@@ -106,7 +105,7 @@ export class Registry<T extends Piece<any>> extends Collection<string, any> {
 
     private async insert(insert: T): Promise<T> {
         insert.onLoad()
-        this.set(insert.name, insert)
+        this.set(insert.name!, insert)
         return insert
     }
 

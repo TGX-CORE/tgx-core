@@ -5,11 +5,8 @@ const client = new Client({
     sweep: join(__dirname, './'),
     registries: Registries.All,
     webhook: {
-        url: 'https://bca5-175-176-51-55.ngrok-free.app',
+        url: 'https://07ff-2001-4451-831-2b00-d066-ee0-249b-4aaa.ngrok-free.app',
         port: 8080
-    },
-    poll: {
-        allowed_updates: new AllowedUpdatesOptions(AllowedUpdates.All),
     },
     partials: [PartialTypes.Chat, PartialTypes.Member],
     parseables: [Parseables.MessageEntities],

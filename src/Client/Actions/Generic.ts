@@ -21,11 +21,10 @@ export class GenericAction {
     }
 
     protected emitMessage(event: ClientEvent|false, message: Message, emit: boolean = true): any[]|any {
-        let bot = (message.user?.is_bot && this.client.options.poll?.ignore_bots) && (message.sender_chat && this.client.options.poll?.ignore_sender_chats)
-        let client = (message.user?.id === this.client.me.id && this.client.options.poll?.ignore_self)
+        let bot = message.user?.is_bot&&this.client.poll.options.ignore_bots||message.sender_chat&&this.client.poll.options.ignore_sender_chats
+        let client = message.from?.id === this.client.me.id&&this.client.poll.options.ignore_self
 
         if(!(bot||client) && emit) this.emit(ClientEvent.Message, message)
-
         for(let pointer in ( event ? { [event]: true } : message)){
             if(!Object.values(ClientEvent).includes(pointer as ClientEvent)) continue
             if(this.client.actions[pointer]){

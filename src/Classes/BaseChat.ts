@@ -1,5 +1,6 @@
 import type { ChatHold } from '../Client/Managers/ChatsManager'
 import type { Client } from '../Client/Client'
+import type { Chat } from '../Types/Message'
 
 import { MessagesManager } from '../Client/Managers/MessagesManager'
 import { ChatBase } from './ChatBase'
@@ -74,7 +75,7 @@ export abstract class BaseChat extends ChatBase<BaseChat, ChatPacket> implements
         })
     }
 
-    public async fetch(): Promise<BaseChat|boolean> {
+    public async fetch(): Promise<Chat|boolean> {
         return this.client.chats.fetch(this.id)
     } 
 

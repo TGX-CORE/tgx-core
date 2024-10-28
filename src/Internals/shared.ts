@@ -4,7 +4,7 @@ import type { AbstractCtor } from '@sapphire/utilities'
  * Checks whether the array has the matched value or passes the function.
  * 
  * @param array The array that contains the value.
- * @param value The value to check or the validator.
+ * @param value The value to check or pass a function.
  */
 export function has(array: any[] = [], value: any|((value: any) => any)): boolean {
 	return typeof value === 'function' ?

@@ -18,6 +18,7 @@ import type { ChatPacket } from '../Classes/BaseChat'
 import type { PollPacket } from '../Classes/Poll'
 import type { UserPacket } from '../Classes/User'
 import type { File } from '../Classes/File'
+import type { Invoice } from '../Builders/Invoice'
 
 export enum MessagePayloadMethod {
     Action = 'sendChatAction',
@@ -69,7 +70,7 @@ export type MessagePayload = TextPayload|PhotoPayload|AudioPayload|DocumentPaylo
                              AnimationPayload|VoicePayload|VideoNotePayload|PaidMediaPayload|
                              MediaGroupPayload|VenuePayload|LocationPayload|ContactPayload|PollPayload|
                              DicePayload|ChatActionPayload|CreateInvoiceLinkPayload|
-                             SendInvoicePayload
+                             SendInvoicePayload|Invoice
 
 export type AcceptedEmoji = "👍" | "👎" | "❤" | "🔥" | "🥰" | "👏" | "😁" | "🤔" | "🤯" | "😱" | "🤬" | "😢" | "🎉" |
 "🤩" | "🤮" | "💩" | "🙏" | "👌" | "🕊" | "🤡" | "🥱" | "🥴" | "😍" | "🐳" | "❤‍🔥" | "🌚" |

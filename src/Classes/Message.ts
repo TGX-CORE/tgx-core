@@ -5,6 +5,7 @@ import type { MessagesManager } from '../Client/Managers/MessagesManager'
 import type { MessageEntityPayload } from '../Types/MessageEntity'
 import type { FormDataBuilder } from '../Builders/FormData'
 import type { SendInvoicePayload } from '../Types/Invoice'
+import type { Invoice } from '../Builders/Invoice'
 import type { Client } from '../Client/Client'
 import type { ForumTopic } from './ForumTopic'
 
@@ -111,12 +112,12 @@ export class Message extends BaseClass<Message, MessagePacket> implements Omit<M
     }
 
     /**
-     * Replies an invoice message to the currenct message. Uses auxiliaries.
+     * Replies an invoice message that must be an invoice and not a link to the currenct message.
      * 
      * @param id The id of the invoice.
      */
     public async replyInvoice(id: string){
-        return this.reply(MessagePayloadMethod.Invoice, { ...this.client.invoices.generate(id) } as SendInvoicePayload)
+        return this.reply(MessagePayloadMethod.Invoice, this.client.invoices.generate(id) as Invoice)
     }
 
     /**
@@ -271,25 +272,25 @@ export class Message extends BaseClass<Message, MessagePacket> implements Omit<M
     }
 
     /**
-     * The sender of the message.
+     * The sender of the message as a user.
      */
     public get user(): User|undefined { 
         return this._from ? this.client.users.cache.get(this._from) : undefined
     }
 
-    // public get epoch(){
-    //     const date = new Date(this.date ?? 0 * 1000),
-    //             options:  Intl.DateTimeFormatOptions = {
-    //             year: 'numeric',
-    //             month: 'short',
-    //             day: 'numeric',
-    //             hour: 'numeric',
-    //             minute: 'numeric',
-    //             second: 'numeric',
-    //             timeZoneName: 'short',
-    //             }
-    //     return date.toLocaleString(undefined, options)
-    // }
+    /**
+     * Gets the sender of the message, it can be a user or a chat.
+     */
+    public get from(): User|Chat {
+        return this.sender_chat ?? this.user!
+    }
+
+    /**
+     * Gets the language code of the sender.
+     */
+    public get language_code(): string|undefined {
+        return this.from?.language_code
+    }
 
     /**
      * The id of the message.

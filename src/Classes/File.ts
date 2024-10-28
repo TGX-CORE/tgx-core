@@ -1,4 +1,4 @@
-import type  { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, FilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../Types/File'
+import type { AnimationFilePacket, AudioFilePacket, DocumentFilePacket, FilePacket, PhotoSizeFilePacket, StickerFilePacket, VideoFilePacket, VideoNoteFilePacket, VoiceFilePacket } from '../Types/File'
 import type { Client } from '../Client/Client'
 import type { Stream } from 'node:stream'
 
@@ -6,6 +6,8 @@ import { createReadStream, createWriteStream, type ReadStream } from 'node:fs'
 import { defaults } from '../Internals/shared'
 import { isAbsolute, normalize } from 'path'
 import { parse } from 'node:path'
+
+import FormData from 'form-data'
 
 /**
  * @property client The client will only be availble if the class is passed by tgx-core itself.
@@ -16,6 +18,7 @@ export class File implements FilePacket {
     public file_path?: string
     
     public path?: string 
+    public options?: FormData.AppendOptions
 
     public readonly client?: Client
 
@@ -23,35 +26,20 @@ export class File implements FilePacket {
      * Always check the path to be correct or it will be set as the id of the file.
      * 
      * @param packet The packet, the filel_id, or absolute path to the file to read.
+     * @param options Append options for uploading file, can be empty.
      */
-    public constructor(packet?: FilePacket|string){
+    public constructor(packet?: FilePacket|string, options?: FormData.AppendOptions){
         if(typeof packet === 'string'){
             if(isAbsolute(packet) || normalize(packet) === packet){
                 this.path = packet
+                this.options = options
             } else {
                 this.file_id = packet
             }
         } else {
             defaults(packet, this)
-
-            Object.defineProperty(this, 'client', { value: packet!.client })
+            this.setClient(packet!.client!)
         }
-    }
-
-    /**
-     * The id of the file or 'attach://<id>' of the reading file.
-     */
-    public get id(){
-        const parsed = parse(this.path!)
-        return this.file_id ?? `attach://${parsed.name}`
-    }
-
-    /**
-     * Returns a tuple value for form appending.
-     */
-    public get form(): [string, ReadStream, string] {
-        const parsed = parse(this.path!)
-        return [parsed.name, createReadStream(this.path!), parsed.base]
     }
 
     /**
@@ -97,6 +85,31 @@ export class File implements FilePacket {
 
         } 
         return false
+    }
+
+    /**
+     * @param client The client to attach.
+     */
+    public setClient(client: Client){
+        if(this.client) return this
+        Object.defineProperty(this, 'client', { value: client })
+        return this
+    }
+
+    /**
+     * The id of the file or 'attach://<id>' of the reading file.
+     */
+    public get id(){
+        const parsed = parse(this.path!)
+        return this.file_id ?? `attach://${parsed.name}`
+    }
+
+    /**
+     * Returns a tuple value for form appending.
+     */
+    public get form(): [string, ReadStream, FormData.AppendOptions|string] {
+        const parsed = parse(this.path!)
+        return [parsed.name, createReadStream(this.path!), this.options ?? parsed.base]
     }
 
 }

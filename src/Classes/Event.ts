@@ -6,9 +6,9 @@ import { Piece } from './Piece'
 
 export interface EventMeta {
     name: ClientEvent
+    event: ClientEvent
     once?: boolean
     emitter?: any
-    event?: string
 }
 
 /**
@@ -29,10 +29,11 @@ export abstract class Event extends Piece<EventMeta> {
     private utilizer: ((...args: any[]) => void) | null
 
     public constructor(context_piece: PieceContext, context_metadata: EventMeta){
+        context_metadata.name = context_metadata.event ?? context_metadata.name
         super(context_piece, context_metadata)
+        
         this.event = context_metadata.event ?? this.name
         this.once = context_metadata.once ?? false
-        
         this.emitter = context_metadata.emitter ?? this.client
 
         this.utilizer = this.emitter && this.event ? (this.once ? this._runOnce.bind(this) : this._run.bind(this)) : null

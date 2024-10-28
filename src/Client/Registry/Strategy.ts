@@ -21,7 +21,7 @@ export class Strategy<T extends Piece<any>> {
     public filter(path: string): any {
         const extension = extname(path)
         if(!this.supportedExtensions.includes(extension)) return null
-        if (this.filterDtsFiles && path.endsWith('.d.ts')) return null
+        if(this.filterDtsFiles && path.endsWith('.d.ts')) return null
         const name = basename(path)
         if (name === '' || name.startsWith('.')) return null
         return { extension, path, name }

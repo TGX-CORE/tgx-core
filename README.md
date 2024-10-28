@@ -1,12 +1,12 @@
 # TGX-CORE
 
-![Latest](https://img.shields.io/npm/v/tgx-core/latest)
+![Latest](https://img.shields.io/npm/v/tgx-core/latest?style=flat-square)
 
 ![Alpha](https://img.shields.io/npm/v/tgx-core/alpha?style=flat-square)
 
 ## About
 
-tgx-core is a a modern, powerful library for building your Telegram bots, with seamless support for both JavaScript and Typescript.
+tgx-core is a modern, powerful library for building your Telegram bots, with seamless support for both JavaScript and Typescript.
 
 - Object-oriented
 - Modular
@@ -48,4 +48,4 @@ client.intialize(<bot-token>)
 - [Documentation](https://tgx-core.js.org)
 
 ## Development Support
-For development support you may join our official Telegram support server [TGX-CORE DEVs](https://t.me/tgxcore).
+For development support you may join our official Telegram support server [@TGX-CORE DEVs](https://t.me/tgxcore).

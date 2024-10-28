@@ -23,6 +23,7 @@ export class User extends ChatBase<User, UserPacket> implements UserPacket {
 
     public declare id: number
 
+    public language_code?: string
     public is_bot?: boolean
 
     constructor(client: Client, packet: UserPacket){

@@ -46,16 +46,6 @@ export interface UpdatePacket {
     removed_chat_boost?: ChatBoostRemoved
 }  
 
-export interface PollManagerOptions {
-    limit?: number
-    timeout?: number
-    allowed_updates?: AllowedUpdatesOptions
-    delay?: number
-    ignore_self?: boolean
-    ignore_bots?: boolean
-    ignore_sender_chats?: boolean
-}
-
 export enum AllowedUpdates {
 
     All = 'all',
@@ -81,6 +71,51 @@ export enum AllowedUpdates {
     
 }
 
+export interface PollManagerOptions {
+
+    /**
+     * Limits the number of updates to be retrieved. Values between 1-100 are accepted.
+     */
+    limit?: number
+
+    /**
+     * Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
+     * @default 0
+     */
+    timeout?: number
+
+    /**
+     * The allowed updates to receive by the client.
+     * @default [AllowedUpdates.Message]
+     */
+    allowed_updates?: AllowedUpdatesOptions
+
+    /**
+     * The delay before sending another request in milliseconds for long polling.
+     * @default 5_000
+     */
+    delay?: number
+
+    /**
+     * Whether to not emit updates from self.
+     * @default true
+     */
+    ignore_self?: boolean
+
+    /**
+     * Whether to not emit updates from other bots.
+     * @default true
+     */
+    ignore_bots?: boolean
+
+    /**
+     * Wheter to not emit updates from sender chats.
+     * @default false
+     */
+    ignore_sender_chats?: boolean
+    
+}
+
 export class PollManager extends BaseManager<PollManagerOptions> {
 
     public active: boolean = false
@@ -91,7 +126,7 @@ export class PollManager extends BaseManager<PollManagerOptions> {
         super(client, 'poll', {
             limit: 100,
             timeout: 0,
-            delay: 5,
+            delay: 5_000,
             allowed_updates: new AllowedUpdatesOptions(AllowedUpdates.Message),
             ignore_self: true,
             ignore_bots: true,
@@ -142,7 +177,7 @@ export class PollManager extends BaseManager<PollManagerOptions> {
             this.active ?
                 this.interlude()
             :   null
-        }, this.options.delay! * 1000)
+        }, this.options.delay)
     }
 
     private async poll(): Promise<any> {

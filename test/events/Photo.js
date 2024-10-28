@@ -10,7 +10,7 @@ class Photo extends Event {
     }
 
     run(message) {
-        message.replyMessage('Photo received!')
+        message.replyText('Photo received!')
     }
 
 }

@@ -36,10 +36,21 @@ export class CommandsRegistry extends Registry<Command> {
     public override async loadAll(): Promise<void> {
         const cached = this.cached
         await super.loadAll()
- 
+
         this.each((command: Command) => {
             if(command.ignore) return
-            let current = cached[command.scope] ?? (cached[command.scope] = { })
+
+            let { scope, language_code, chat_ids, chat_groups } = command
+            let language_codes = [ ], current = cached[scope] ??= { }
+
+            if(typeof language_code === 'object'){
+                for(let [key, value] of Object.entries(language_code)){
+                    if(value.ignore) continue
+                    language_codes.push([key, value.command])
+                }
+            } else {
+                language_codes.push([language_code, command.command])
+            }
 
             switch(command.scope){
                 case CommandScopeType.AllChatAdministrators:
@@ -47,82 +58,31 @@ export class CommandsRegistry extends Registry<Command> {
                 case CommandScopeType.AllGroupChats:
                 case CommandScopeType.Default:
                 default:
-                    current = current[command.language_code] ?? (current[command.language_code] = [ ])
-                    current.push(command.getCommand())
+                    for(let [code, command_name] of language_codes){
+                        (current[code!] ??= [ ]).push(`${command.name}|${command_name}`)
+                    }
                     break
                 case CommandScopeType.ChatAdministrators:
                 case CommandScopeType.Chat:
-                    current = current[command.language_code] ?? (current[command.language_code] = { })
-                    for(const id of command.chat_ids ?? [ ]){
-                        current = current[id] ?? (current[id] = [ ])
-                        current.push(command.getCommand())
+                    for(let [code, command_name] of language_codes){
+                        for(const id of chat_ids ?? [ ]){
+                            ((current[code!] ??= { })[id] ??= [ ]).push(`${command.name}|${command_name}`)
+                        }
                     }
                     break
                 case CommandScopeType.ChatMember:
-                    current = current[command.language_code] ?? (current[command.language_code] = { })
-                    for(const id in command.chat_groups ?? { }){
-                        current = current[id] ?? (current[id] = { })
-                        current.ids = [ ...current.ids ?? [ ], ...command.chat_groups?.[id] ?? [ ] ]
-                        current.commands = current.commands ?? (current.commands = [ ])
-                        current.commands.push(command.getCommand())
+                    for(let [code, command_name] of language_codes){
+                        for(const id in chat_groups ?? { }){
+                            let group = ((current[code!] ??= { })[id] ??= { ids: [ ], commands: [ ]})
+                            group.ids.push(...chat_groups?.[id] ?? [ ])
+                            group.commands.push(`${command.name}|${command_name}`)
+                        }
                     }
+                    break
             }
         })
 
-        for(const scope in cached){
-            let current = cached[scope]
-            for(const language_code in cached[scope]){
-                current = current[language_code]
-                switch(scope){
-                    case CommandScopeType.AllChatAdministrators: 
-                    case CommandScopeType.AllPrivateChats:
-                    case CommandScopeType.AllGroupChats:
-                    case CommandScopeType.Default:
-                        await this.registerCommand(
-                            JSON.stringify(current),
-                            language_code,
-                            scope
-                        )
-                        break
-                    case CommandScopeType.ChatAdministrators:
-                    case CommandScopeType.Chat:
-                        for(const chat_id in current){
-                            await this.registerCommand(
-                                JSON.stringify(current[chat_id]),
-                                language_code,
-                                scope,
-                                chat_id
-                            )
-                        }
-                        break
-                    case CommandScopeType.ChatMember:
-                        for(const chat_id in current){
-                            for(const user_id of current[chat_id]['ids']){
-                                await this.registerCommand(
-                                    JSON.stringify(current[chat_id].commands),
-                                    language_code,
-                                    scope,
-                                    chat_id,
-                                    user_id
-                                )
-                            }
-                        }
-                        break
-                }
-            }
-        }
-    }
-
-    public async registerCommand(commands: string, language_code: string, scope: CommandScopeType, chat_id?: string|number, user_id?: string): Promise<boolean> {
-        return this.client.commands.set({
-            commands,
-            language_code: language_code == 'undefined' ? undefined : language_code,
-            scope: JSON.stringify({
-                type: scope, 
-                user_id: user_id ? Number(user_id) : undefined, 
-                chat_id: chat_id ? (typeof chat_id == 'string' && chat_id?.startsWith('@') ? chat_id : Number(chat_id)) : undefined
-            })
-        })
+        await this.client.commands.update()
     }
 
 }

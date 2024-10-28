@@ -26,16 +26,16 @@ export class InvoicesManager extends CachedManager<string, Invoice> {
     }
 
     /**
-     * Returns an invoice link or an invoice with complete details such as payment_provider, but excluding chat ids.
+     * Returns the invoice link or invoice.
      * 
      * @param id The id of the invoice.
      */
-    public generate(id: string): Boolean|String|Partial<SendInvoicePayload> {
+    public generate(id: string): Boolean|String|Partial<Invoice> {
         const stored = this.cache.get(id)
         return stored ?
             typeof stored === 'string' ?
                 stored
-            :   stored.setProviderToken(this.provider_token!) as unknown as SendInvoicePayload
+            :   stored.setProviderToken(this.provider_token!)
         : false
     }
 

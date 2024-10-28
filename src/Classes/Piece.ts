@@ -9,13 +9,13 @@ export interface PieceContext {
 }
 
 export interface PieceMeta {
-    name: string
+    name?: string
     enabled?: boolean
 }
 
 export class Piece<Meta extends PieceMeta> {
 
-    public name: string
+    public name?: string
 
     public enabled: boolean
 

@@ -6,15 +6,21 @@ import { Piece } from './Piece'
 
 export interface CommandMeta {
     name: string
-    command: string
-    description: string
+    command?: string
+    description?: string
     scope?: CommandScopeType
-    language_code?: string
     ignore?: boolean
+
+    language_code?: string|{
+        [code: string]: BotCommand
+    }
+
     chat_ids?: number[]
+
     chat_groups?: {
         [key: number]: number[]
     },
+
     emitter?: any
 }  
 
@@ -33,14 +39,18 @@ export abstract class Command extends Piece<CommandMeta> {
 
     public emitter: any
 
-    public command: string
-    public description: string
-    public scope: CommandScopeType
-    public language_code: string
+    public command?: string
+    public description?: string
     public ignore: boolean
+    
+    public scope: CommandScopeType
     public chat_ids?: number[]
     public chat_groups?: {
         [key: number]: number[]
+    }
+
+    public language_code: string|{
+        [code: string]: BotCommand 
     }
 
     public declare registry: CommandsRegistry
@@ -48,16 +58,18 @@ export abstract class Command extends Piece<CommandMeta> {
     private utilizer: ((...args: any[]) => void) | null
 
     constructor(context_piece: PieceContext, context_metadata: CommandMeta){
+        context_metadata.name = context_metadata.command ?? context_metadata.name
         super(context_piece, context_metadata)
 
-        this.command = context_metadata.command ?? context_metadata.name
-        this.description = context_metadata.description
+        this.command = context_metadata?.command
+        this.description = context_metadata?.description
+
         this.scope = context_metadata.scope ?? CommandScopeType.Default
         this.language_code = context_metadata.language_code ?? 'undefined'
         this.ignore = context_metadata.ignore ?? false
+
         this.chat_ids = context_metadata.chat_ids
         this.chat_groups = context_metadata.chat_groups
-
         this.emitter = context_metadata.emitter ?? this.client?.commands
 
         this.utilizer = this.emitter && this.command ? this._run.bind(this) : null
@@ -72,7 +84,7 @@ export abstract class Command extends Piece<CommandMeta> {
             const maxListeners = this.emitter.getMaxListeners()
 			if (maxListeners !== 0) this.emitter.setMaxListeners(maxListeners + 1)
 
-            this.emitter.on(this.command, this._run.bind(this)) 
+            this.emitter.on(this.command, this.utilizer) 
         }
     }
 
@@ -80,11 +92,30 @@ export abstract class Command extends Piece<CommandMeta> {
      * Stops the listener.
      */
     public stop(){
-        this.emitter.removeListener(this.command, this._run)
+        this.emitter.removeListener(this.command, this.utilizer)
     }
 
-    public getCommand(): BotCommand {
-        return { command: this.command, description: this.description }
+    /**
+     * Gets the command. If the command cannot be found, it will return an empty object.
+     * 
+     * @param identifier If you have multiple language code, this can be the name or the language code. Otherwise returns the command from this.
+     */
+    public getCommand(identifier?: string): Partial<BotCommand> {
+        let current
+        if(!identifier || this.command === identifier){
+            current = this
+        } else {
+            if(typeof this.language_code === 'object'){
+                if(this.language_code[identifier]){
+                    current = this.language_code[identifier]
+                } else {
+                    current = Object.values(this.language_code).find((command) => command.command === identifier)
+                }
+            }
+        }
+
+        let { command, description, ignore } = current ??= { }
+        return { command, description, ignore }
     }
 
     /**
