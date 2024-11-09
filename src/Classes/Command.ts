@@ -21,6 +21,7 @@ export interface CommandMeta {
         [key: number]: number[]
     },
 
+
     emitter?: any
 }  
 
@@ -59,8 +60,7 @@ export abstract class Command extends Piece<CommandMeta> {
 
     private utilizer: ((...args: any[]) => void) | null
 
-    public constructor(context_piece: PieceContext, context_metadata: CommandMeta){
-        context_metadata.name = context_metadata.command ?? context_metadata.name
+    constructor(context_piece: PieceContext, context_metadata: CommandMeta){
         super(context_piece, context_metadata)
 
         this.command = context_metadata?.command
@@ -81,31 +81,12 @@ export abstract class Command extends Piece<CommandMeta> {
      * Activates or resumes the listener, this is activated on load.
      */
     public listen(){
-        if(this.enabled){
-            this.emitter.on(this.command, this.utilizer) 
+        if(this.utilizer){
+            const maxListeners = this.emitter.getMaxListeners()
+			if (maxListeners !== 0) this.emitter.setMaxListeners(maxListeners + 1)
+
+            this.emitter.on(this.command, this._run.bind(this)) 
         }
-    }
-
-    public get enabled(): boolean {
-        return Boolean(this.emitter && this.utilizer && this._enabled)
-    }
-
-    /**
-     * Enables the piece.
-     * 
-     * @param resume Wether to resume the piece, must be enabled.
-     */
-    public enable(resume?: boolean){
-        this._enabled = true
-        if(resume) this.listen()
-    }
-
-    /**
-     * Stops and disables the piece.
-     */
-    public disable(){
-        this.stop()
-        this._enabled = false
     }
 
     /**

@@ -273,7 +273,7 @@ export class Message extends BaseClass<Message, MessagePacket> implements Omit<M
     }
 
     /**
-     * The sender of the message as a user.
+     * The sender of the message as a user as a user.
      */
     public get user(): User|undefined { 
         return this._from ? this.client.users.cache.get(this._from) : undefined
