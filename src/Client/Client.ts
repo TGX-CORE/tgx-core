@@ -104,7 +104,7 @@ export class Client extends BaseClient {
 
     if(!token) throw new TGXError(ErrorCodes.MissingToken)
 
-    this.logger.debug(`Client is preparing to start.`, `\n`, `${ token?.split(':')[0] }:${ token?.split(':')[1]?.replace(/[a-zA-Z0-9]/g, 'X') }`)
+    this.logger.debug(`Client is preparing to start.`, `\n`, `TOKEN: ${ token?.split(':')[0] }:${ token?.split(':')[1]?.replace(/[a-zA-Z0-9]/g, 'X') }`)
     this.rest.setToken(token)
     this.invoices.setToken(provider_token)
     

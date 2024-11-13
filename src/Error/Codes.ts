@@ -7,7 +7,9 @@ export const keys = [
     'AnInvoiceLink',
 
     'InvalidChatPermission',
-    'InvalidAdminstratorRight'
+    'InvalidAdminstratorRight',
+
+    'InvalidRegistry'
 
 ]
 

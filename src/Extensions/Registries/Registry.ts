@@ -13,7 +13,7 @@ export interface RegistryOptions {
     name: string
 }
 
-export abstract class Registry<K, T extends Piece<any>> extends Collection<K, T> {
+export abstract class Registry<K = string, T extends Piece<any> = any> extends Collection<K, T> {
 
     public Constructor: AbstractConstructor<T>
 

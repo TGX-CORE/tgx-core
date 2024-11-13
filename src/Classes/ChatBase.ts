@@ -7,6 +7,7 @@ import { FormDataBuilder } from '../Builders/FormData'
 import { Routes } from '../Types/Routes'
 import { BaseClass } from './BaseClass'
 import { File } from './File'
+import { CallbackCollector, CallbackCollectorOptions } from './CallbackCollector'
 
 export abstract class ChatBase<T, P> extends BaseClass<T, P> {
 
@@ -55,8 +56,17 @@ export abstract class ChatBase<T, P> extends BaseClass<T, P> {
      * 
      * @param options The options for the collector.
      */
-    public createMessageCollector(options: MessageCollectorOptions): MessageCollector {
+    public createMessageCollector(options?: MessageCollectorOptions): MessageCollector {
         return new MessageCollector(this as unknown as Chat, options)
+    }
+
+    /**
+     * Creates a callback query collector to the current chat.
+     * 
+     * @param options The options for the collector.
+     */
+    public createCallbackCollector(options?: CallbackCollectorOptions): CallbackCollector {
+        return new CallbackCollector(this as unknown as Chat, options)
     }
 
 }

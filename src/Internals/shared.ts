@@ -1,12 +1,13 @@
 export type AbstractConstructor<T = any> = abstract new (...args: any[]) => T;
+export type Constructor<T = any> = new (...args: any) => T;
 
 /**
  * Here is an enumeration for which key are read for the coresponding variables.
  * 
  * @property Token Your Telegram bot token.
  * @property ProviderToken Your Telegram payment provider token.
- * @property APIID Your Telegram app api id.
- * @property APIHash Your Telegram app api hash.
+ * @property Api Your Telegram app api id.
+ * @property Hash Your Telegram app api hash.
  */
 export enum EnvironmentVariables {
 	Token = 'TELEGRAM_TOKEN',
@@ -47,11 +48,12 @@ export function isJson(value: unknown): boolean {
 }
 
 export function classExtends<T extends AbstractConstructor>(value: unknown, base: T): value is T {
-	let constructor = value as Function|null
-	while(constructor){
-		if(constructor === base) return true
-		constructor = Object.getPrototypeOf(constructor)
-	}
+	if(typeof value !== 'function') return false
+	let constructor = value.prototype
+	while (constructor) {
+        if (constructor === base.prototype) return true
+        constructor = Object.getPrototypeOf(constructor);
+    }
 	return false
 }
 

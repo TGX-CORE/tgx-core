@@ -1,5 +1,8 @@
-node_modules
+# Dependencies
+/node_modules
 .npmignore
 .gitignore
 .vscode
-dist
+
+# Production
+/dist

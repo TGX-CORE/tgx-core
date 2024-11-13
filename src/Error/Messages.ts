@@ -11,4 +11,6 @@ export const ErrorMessage = {
     [ErrorCodes.InvalidChatPermission]: (chat_permission: string) => `Encountered an invalid chat permission "${chat_permission}".`,
     [ErrorCodes.InvalidAdminstratorRight]: (administrator_right: string) => `Encountered an invalid administrator right "${administrator_right}".`,
 
+    [ErrorCodes.InvalidRegistry]: (name: string) => `The RegistriesExtension tried to register an invalid registry "${name}".`
+    
 }

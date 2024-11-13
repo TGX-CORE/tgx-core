@@ -1,12 +1,14 @@
 import type { MessagePacket, MessageEditPayload, MessagecaptionEditPayload, MessageMediaEditPayload, MessageReplyMarkupEditPayload, ForwardPayload } from '../Client/Managers/MessagesManager'
-import { CallbackCollector, type CallbackCollectorOptions } from './CallbackCollector'
+import type { CallbackCollector, CallbackCollectorOptions } from './CallbackCollector'
 import type { MessagePayload, Chat, CopyMessagePayload } from '../Types/Message'
 import type { MessagesManager } from '../Client/Managers/MessagesManager'
 import type { MessageEntityPayload } from '../Types/MessageEntity'
 import type { FormDataBuilder } from '../Builders/FormData'
+import type { CallbackQuery } from './CallbackQuery'
 import type { Invoice } from '../Builders/Invoice'
 import type { Client } from '../Client/Client'
 import type { ForumTopic } from './ForumTopic'
+
 
 import { Animation, Audio, Document, PhotoSize, Sticker, Video, VideoNote, Voice } from './File'
 import { MessageEntitiesStore } from './MessageEntities'
@@ -222,8 +224,17 @@ export class Message extends BaseClass<Message, MessagePacket> implements Omit<M
         return this.chat.messages.delete(this.id)
     }
 
-    public createCallbackCollector(options: CallbackCollectorOptions): CallbackCollector {
-        return new CallbackCollector(this, options)
+    /**
+     * Creates a callback query collector to the chat of the message while filtering only relevant to the message.
+     * 
+     * @param options The options for the collector, the filter is unoverridable.
+     * @param filter Additional conditions to the filter.
+     */
+    public createCallbackCollector(options: CallbackCollectorOptions, filter?: (query: CallbackQuery) => any): CallbackCollector {
+        return this.chat.createCallbackCollector({
+            ...options,
+            filter: (query: CallbackQuery) => query.message.message_id === this.id && (filter ?? (() => true))(query)
+        })
     }
 
     /**

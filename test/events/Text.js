@@ -50,29 +50,38 @@ class Message extends Event {
         //     new FormDataBuilder().append('field_residences', join(__dirname, '../media/field_residences.png'), 'field_residences.png')
         // )
 
-        let reply = await message.reply(
-            MessagePayloadMethod.Photo,
-            {
-                photo: new File(join(__dirname, '../media/field_residences.png'))
-            }
-        )
+        // let reply = await message.reply(
+        //     MessagePayloadMethod.Photo,
+        //     {
+        //         photo: new File(join(__dirname, '../media/field_residences.png'))
+        //     }
+        // )
         
-        console.log(await reply.photo[1].download('./test/media/test.jpg'))
+        // console.log(await reply.photo[1].download('./test/media/test.jpg'))
         
-        // const reply = await message.reply(MessagePayloadMethod.Text, {
-        //     text: 'This is a text.',
-        //     // reply_markup: new ReplyKeyboardRemove(),
+        const reply = await message.reply(MessagePayloadMethod.Text, {
+            text: 'This is a text.',
+            // reply_markup: new ReplyKeyboardRemove(),
 
-        //     // reply_markup: new ForceReply(),
+            // reply_markup: new ForceReply(),
 
-        //     reply_markup: new InlineKeyboardMarkup()
-        //         .addrow(KeyboardButton.CallbackData('Button 1', 'test'), KeyboardButton.CallbackData('Button 2', 'test 2'))
-        //         .addrow(KeyboardButton.Url('Test', 'https://www.google.com')),
+            reply_markup: new InlineKeyboardMarkup()
+                .addrow(KeyboardButton.CallbackData('Button 1', 'test'), KeyboardButton.CallbackData('Button 2', 'test 2'))
+                .addrow(KeyboardButton.Url('Test', 'https://www.google.com')),
 
-        //     // reply_markup: new ReplyKeyboardMarkup(false, false, true)
-        //     //  .addRow(new ReplyButton.Text('Button 1'), new ReplyButton.Text('Button 2')),
+            // reply_markup: new ReplyKeyboardMarkup(false, false, true)
+            //  .addRow(new ReplyButton.Text('Button 1'), new ReplyButton.Text('Button 2')),
 
-        // })
+        })
+
+        const collector = reply.chat.createCallbackCollector()
+        collector.on('collect', (query) => {
+            console.log('collected', query)
+        })
+
+        collector.once('end', (Collection, reason) => {
+            console.log(Collection, reason)
+        })
         
         // const collector = reply.createCallbackCollector({ max: 1 })
 

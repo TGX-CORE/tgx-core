@@ -74,9 +74,10 @@ export class GenericAction {
             delete packet.from
         }
 
-        if( packet.chat ){
-            let _partial = this.partials.chat(packet.chat)
-            packet._chat = packet.chat.id
+        let _chat
+        if(_chat = packet.chat||packet.message?.chat){
+            let _partial = this.partials.chat(_chat)
+            packet._chat = _chat.id
 
             chat = true
             partial = _partial
@@ -99,8 +100,8 @@ export class GenericAction {
         }
 
         if( packet.message ){
-            packet._message = packet.message.id
-            packet._message_chat = packet.message.chat.id
+            packet._message = packet.message.message_id
+            packet._message_chat = packet.message.chat?.id
             delete packet.message
         }
 

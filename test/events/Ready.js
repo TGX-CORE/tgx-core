@@ -11,7 +11,8 @@ class Ready extends Event {
     }
 
     async run(client) {
-        // console.log(client.user)
+
+        // console.log(client.extensions.get('Registries'))
 
         // client.me.setName('TGX-CORE')
 

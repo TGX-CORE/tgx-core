@@ -1,6 +1,7 @@
+import { CollectorEvent, type CollectorOptions } from '../Types/Collector'
 import type { Message } from './Message'
 
-import { Collector, CollectorEvent, CollectorOptions } from './Collector'
+import { Collector } from './Collector'
 import { ClientEvent } from '../Types/ClientEvent' 
 import { Chat } from '../Types/Message'
 
@@ -19,7 +20,7 @@ export class MessageCollector extends Collector<MessageCollectorOptions, number,
 
     public received: number
 
-    public constructor(chat: Chat, options: MessageCollectorOptions = { }){
+    public constructor(chat: Chat, options?: MessageCollectorOptions){
         super(chat.client, options)
 
         this.chat = chat
@@ -27,7 +28,6 @@ export class MessageCollector extends Collector<MessageCollectorOptions, number,
         this.received = 0
 
         this.client.on(ClientEvent.Message, this.handleCollect)
-
         this.once(CollectorEvent.End, () => {
             this.client.removeListener(ClientEvent.Message, this.handleCollect)
         })
@@ -45,8 +45,8 @@ export class MessageCollector extends Collector<MessageCollectorOptions, number,
     }
 
     get endReason(){
-        if(this.options.max && this.collection.size >= this.options.max) return 'limit'
-        if(this.options.maxProcess && this.received >= this.options.maxProcess) return 'processedLimit'
+        if(this.options?.max && this.collection.size >= this.options.max) return 'limit'
+        if(this.options?.maxProcess && this.received >= this.options.maxProcess) return 'processedLimit'
         return super.endReason
     }
 

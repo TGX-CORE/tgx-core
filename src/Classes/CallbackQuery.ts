@@ -28,7 +28,7 @@ export class CallbackQuery extends BaseClass<CallbackQuery, CallbackQueryPacket>
     public declare id: string
     
     public declare _message: number
-    public declare _message_chat: number
+    public declare _chat: number
     public declare _from: number
 
     public constructor(client: Client, packet: CallbackQueryPacket){
@@ -36,11 +36,11 @@ export class CallbackQuery extends BaseClass<CallbackQuery, CallbackQueryPacket>
     }
 
     public get message(): Message {
-        return this.client.chats.cache.get(this._message_chat)!.messages.cache.get(this._message)!
+        return this.client.chats.cache.get(this._chat)!.messages.cache.get(this._message)!
     }
 
     public get chat(): Chat {
-        return this.client.chats.cache.get(this._message_chat)!
+        return this.client.chats.cache.get(this._chat)!
     }
 
     public get user(): User {
